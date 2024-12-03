@@ -1,0 +1,63 @@
+//:SECTIONSVISIBILITY Disabled
+//:USETYPE WORKERTASK
+public Main()
+{
+	//:HIDDENPORT[inStart] TRUE
+	//:HIDDENPORT[inCount] TRUE
+	//:HIDDENPORT[inDelay] TRUE
+	//:HIDDENPORT[inRepeat] TRUE
+	//:HIDDENPORT[outIsFirst] TRUE
+	//:HIDDENPORT[outIsLast] TRUE
+	EnumerateIntegers
+	(
+		inStart: 0
+		inCount: Nil
+		inStep: 1
+		inDelay: 0
+		inRepeat: False
+		outValue: con_92548b73_8a5c_406e_8b5a_0a838d4b7028
+		outIsFirst: Nil
+		outIsLast: Nil
+	)
+
+	MyRunningAverage
+	(
+		inValue: con_92548b73_8a5c_406e_8b5a_0a838d4b7028
+		inInertia: 0.950000
+		outAverage: con_d6a0ee41_5dfa_4700_9f2b_3f5fe332f575
+	)
+
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: con_d6a0ee41_5dfa_4700_9f2b_3f5fe332f575
+		inString2: "\r\n"
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_0f782a41_c92c_42b1_bcf4_ffdbc4fbb91d
+	)
+
+	//:HIDDENPORT[inFileAccessMode] TRUE
+	//:HIDDENPORT[inIgnoreErrors] TRUE
+	SaveText
+	(
+		inText: con_0f782a41_c92c_42b1_bcf4_ffdbc4fbb91d
+		inFileAccessMode: CreateOrAppend
+		inFile: "avg.txt"
+		inIgnoreErrors: False
+	)
+
+	Delay
+	(
+		inTime: con_d6a0ee41_5dfa_4700_9f2b_3f5fe332f575
+	)
+}
+

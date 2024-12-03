@@ -1,0 +1,7 @@
+﻿<AuroraVisionProject Name="uf_linux" Version="5.5.2" Revision="78691" Product="Professional" StartUpProgramName="Main">
+  <Files>
+    <Program Path="uf_linux.avcode" />
+    <View Path="uf_linux.avview" />
+    <UserFilters Path64="/home/mk6554/Repos/TestUserFilter_Keba/build/libUserFilterLibrary.so" />
+  </Files>
+</AuroraVisionProject>
