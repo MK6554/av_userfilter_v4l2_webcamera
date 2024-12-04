@@ -11,9 +11,11 @@ class WebCamera{
     void close_acqisition();
     double get_property(int property_id)const;
     bool isRunning() const {return true;}
-    WebCamera(int cameraIndex, int width, int height, int framerate);
     double get_fps()const{return queue.get_fps();}
     size_t received_frames()const{return m_received_frames.load();}
+    size_t enqueued_frames()const{return queue.enqueued_frames();}
+    WebCamera(int cameraIndex, int width, int height, int framerate);
+    WebCamera(int cameraIndex, int width, int height, int framerate, size_t queue_size);
     ~WebCamera();
     private:
     std::atomic<size_t> m_received_frames;

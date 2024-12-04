@@ -27,6 +27,7 @@ void ParaQueue::push(cv::Mat const &image) {
   update_times();
   while (m_queue.size() > max_queue_size) {
     m_queue.pop();
+    log("Image overflow");
   }
 }
 

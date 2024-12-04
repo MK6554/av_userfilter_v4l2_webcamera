@@ -27,8 +27,6 @@ void WebCamera::start_acqisition()
 
 bool WebCamera::grab_image(avl::Image &image)
 {
-  log("Has enqueued: " + std::to_string(queue.has_enqueued()));
-  log("Is running: " + std::to_string(running));
   if (queue.has_enqueued())
   {
     return queue.pop(image);
@@ -62,13 +60,19 @@ void WebCamera::close_acqisition()
 
 double WebCamera::get_property(int property_id) const
 {
-    return cap.get(property_id);
+  return cap.get(property_id);
 }
 
 WebCamera::WebCamera(int cameraIndex, int width, int height, int framerate)
-    : queue(8), cameraIndex(cameraIndex), width(width), height(height), framerate(framerate),m_received_frames(0) {}
+    : queue(8), cameraIndex(cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
 
-WebCamera::~WebCamera() { close_acqisition(); }
+WebCamera::WebCamera(int cameraIndex, int width, int height, int framerate,
+                     size_t queue_size) : queue(queue_size), cameraIndex(cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
+
+WebCamera::~WebCamera()
+{
+  close_acqisition();
+}
 
 void WebCamera::captureLoop()
 {
@@ -76,9 +80,12 @@ void WebCamera::captureLoop()
   cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
   cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
   cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+  // cap.set(cv::CAP_PROP_EXPOSURE, height);
   sleep(50);
   cap.set(cv::CAP_PROP_FPS, framerate);
   sleep(50);
+  log("Size: " + std::to_string((int)cap.get(cv::CAP_PROP_FRAME_WIDTH)) + " x " + std::to_string((int)cap.get(cv::CAP_PROP_FRAME_HEIGHT)));
+  log("Exposure: " + std::to_string((int)cap.get(cv::CAP_PROP_EXPOSURE)));
   if (!cap.isOpened())
   {
     running = false;
@@ -92,7 +99,7 @@ void WebCamera::captureLoop()
     {
       continue;
     }
-    cap >> frame;
+    cap.retrieve(frame);
     m_received_frames++;
     queue.push(frame);
   }
