@@ -11,8 +11,11 @@ class WebCamera{
     void close_acqisition();
     bool isRunning() const {return true;}
     WebCamera(int cameraIndex, int width, int height, int framerate);
+    double get_fps()const{return queue.get_fps();}
+    size_t received_frames()const{return m_received_frames.load();}
     ~WebCamera();
     private:
+    std::atomic<size_t> m_received_frames;
     int width, height, framerate;
     int cameraIndex;
     cv::VideoCapture cap;

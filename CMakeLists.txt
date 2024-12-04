@@ -14,7 +14,7 @@ set(UF_NAME ${CMAKE_PROJECT_NAME})
 set(EXE_NAME "${CMAKE_PROJECT_NAME}_TEST")
 
 # Specify the source directory
-set(AVEXECUTOR_DIR "/home/mk6554/Downloads/Installers/5.5/avexecutor/")
+set(AVEXECUTOR_DIR "/etc/avexecutor/")
 set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
 set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
 

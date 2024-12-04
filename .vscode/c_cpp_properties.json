@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/mk6554/Downloads/Installers/5.5/avexecutor/include/**",
+                "/etc/avexecutor/include/**",
                 "/usr/local/include/opencv4/"
             ],
             "defines": [],

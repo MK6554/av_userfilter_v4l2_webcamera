@@ -3,11 +3,11 @@
 void
 log(const std::string& msg)
 {
-    std::cout << msg << std::endl;
+    // std::cout << msg << std::endl;
 }
 
 void
 err(const std::string& msg)
 {
-     std::cout << msg << std::endl;
+    //  std::cout << msg << std::endl;
 }

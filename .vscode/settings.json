@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "/home/mk6554/Repos/TestUserFilter_Keba",
+    "cmake.sourceDirectory": "/home/maciejk/Repos/TestUserFilter",
     "files.associations": {
         "queue": "cpp",
         "atomic": "cpp",
@@ -65,6 +65,10 @@
         "stop_token": "cpp",
         "streambuf": "cpp",
         "thread": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "optional": "cpp",
+        "ranges": "cpp",
+        "typeindex": "cpp",
+        "variant": "cpp"
     }
 }

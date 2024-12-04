@@ -2,12 +2,14 @@
 #define UF_QUEUE
 #include <AVL_Lite.h>
 #include <chrono>
+#include <atomic>
 #include <condition_variable>
 #include <mutex>
 #include <opencv2/opencv.hpp>
 #include <queue>
 
 using CLOCK = std::chrono::steady_clock;
+using UNIT = std::chrono::duration<double,std::milli>;
 
 class ParaQueue {
 public:
@@ -16,12 +18,15 @@ public:
   bool has_enqueued() const;
   bool is_empty() const;
   ParaQueue(int q_size);
+  double get_fps() const;
 
 private:
   int max_queue_size;
   mutable std::mutex m_mutex;
+  mutable std::mutex m_period_mutex;
   std::queue<avl::Image> m_queue;
   std::queue<std::chrono::time_point<CLOCK>> time_queue;
-  std::atomic<std::chrono::duration<std::chrono::milliseconds>> period;
+  UNIT period;
+  void update_times();
 };
 #endif
