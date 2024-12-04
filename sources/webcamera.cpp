@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "webcamera.hpp"
 #include "paraqueue.hpp"
 #include <AVL_Lite.h>
 #include <UserFilter.h>
@@ -63,11 +63,11 @@ double WebCamera::get_property(int property_id) const
   return cap.get(property_id);
 }
 
-WebCamera::WebCamera(int cameraIndex, int width, int height, int framerate)
-    : queue(8), cameraIndex(cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
+WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate)
+    : queue(8), m_cameraIndex(m_cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
 
-WebCamera::WebCamera(int cameraIndex, int width, int height, int framerate,
-                     size_t queue_size) : queue(queue_size), cameraIndex(cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
+WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
+                     size_t queue_size) : queue(queue_size), m_cameraIndex(m_cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
 
 WebCamera::~WebCamera()
 {
@@ -76,7 +76,7 @@ WebCamera::~WebCamera()
 
 void WebCamera::captureLoop()
 {
-  cap.open(cameraIndex, cv::CAP_V4L);
+  cap.open(m_cameraIndex, cv::CAP_V4L);
   cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
   cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
   cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);

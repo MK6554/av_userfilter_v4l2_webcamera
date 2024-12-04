@@ -6,6 +6,7 @@
 class WebCamera{
      public:
     void start_acqisition();
+    int camera_index()const{return m_cameraIndex;}
     bool grab_image(avl::Image& image);
     bool grab_image_sync();
     void close_acqisition();
@@ -20,7 +21,7 @@ class WebCamera{
     private:
     std::atomic<size_t> m_received_frames;
     int width, height, framerate;
-    int cameraIndex;
+    int m_cameraIndex;
     cv::VideoCapture cap;
     std::thread capThread;
     std::atomic<bool> running;
