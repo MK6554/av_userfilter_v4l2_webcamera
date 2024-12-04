@@ -60,6 +60,11 @@ void WebCamera::close_acqisition()
   }
 }
 
+double WebCamera::get_property(int property_id) const
+{
+    return cap.get(property_id);
+}
+
 WebCamera::WebCamera(int cameraIndex, int width, int height, int framerate)
     : queue(8), cameraIndex(cameraIndex), width(width), height(height), framerate(framerate),m_received_frames(0) {}
 
