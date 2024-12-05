@@ -1,0 +1,124 @@
+<Window
+    Background="#A6A6A6"
+    Name="window">
+    <Border
+        CornerRadius="15px"
+        Margin="auto"
+        Name="border1">
+        <TablePanel
+            ColumnDefinitions="1fr 1fr"
+            Gap="10px"
+            Name="tablePanel1"
+            RowDefinitions="auto auto auto">
+            <Border
+                Background="#FFFFFF"
+                BorderBrush="#C0C0C0"
+                CornerRadius="10px"
+                Height="100%"
+                ItemAlignment="Center"
+                Justification="Center"
+                Name="picture1outerBorder"
+                TablePanel.Column="0"
+                TablePanel.Row="1">
+                <Border
+                    Margin="10px"
+                    Name="picture1InnerBorder">
+                    <PictureBox
+                        Height="256px"
+                        Name="pictureBox1"
+                        Source="{Binding @con_2e5ed782_9ee4_4e9c_a25e_4544715432b6}"
+                        Width="256px" />
+                </Border>
+            </Border>
+            <Border
+                Background="#FFFFFF"
+                BorderBrush="#C0C0C0"
+                CornerRadius="10px"
+                Height="100%"
+                ItemAlignment="Center"
+                Justification="Center"
+                Name="picture2outerBorder"
+                TablePanel.Column="1"
+                TablePanel.Row="1">
+                <Border
+                    Margin="10px"
+                    Name="picture2InnerBorder">
+                    <PictureBox
+                        Height="256px"
+                        Name="pictureBox2"
+                        Width="256px" />
+                </Border>
+            </Border>
+            <Border
+                Background="#FFFFFF"
+                BorderBrush="#C0C0C0"
+                CornerRadius="10px"
+                Height="100%"
+                Name="border3"
+                TablePanel.Column="0"
+                TablePanel.Row="2">
+                <StackPanel
+                    Name="stackPanel1"
+                    Padding="10px"
+                    Spacing="5px">
+                    <TextBlock
+                        Name="textBlock1"
+                        Text="{Binding @con_26ad3061_5af9_4fbd_ad94_8c313fcb2183}" />
+                    <TextBlock
+                        Name="textBlock2"
+                        Text="textBlock2" />
+                </StackPanel>
+            </Border>
+            <Border
+                Background="#FFFFFF"
+                BorderBrush="#C0C0C0"
+                CornerRadius="10px"
+                Height="100%"
+                Name="borderRD"
+                TablePanel.Column="1"
+                TablePanel.Row="2">
+                <StackPanel
+                    Name="stackPanelRD"
+                    Padding="10px"
+                    Spacing="5px">
+                    <TextBlock
+                        Name="textBlockRD1"
+                        Text="textBlock1" />
+                    <TextBlock
+                        Name="textBlockRD2"
+                        Text="textBlock2" />
+                </StackPanel>
+            </Border>
+            <Border
+                Background="#FFFFFF"
+                BorderBrush="#C0C0C0"
+                CornerRadius="10px"
+                Height="100%"
+                Name="headerBorder"
+                TablePanel.ColSpan="2"
+                TablePanel.Column="0">
+                <StackPanel
+                    ItemAlignment="Center"
+                    Name="stackPanel2"
+                    Orientation="Horizontal"
+                    Padding="10px"
+                    Spacing="15px">
+                    <Svg
+                        Height="48px"
+                        Name="logoSvg"
+                        ViewBox="0 0 48 48"
+                        Width="48px">
+                        <Path
+                            Data="m 20.843041 0 v 11.127888 h -0.004 L 11.595679 1.9170618 C 11.108372 2.2051252 10.637388 2.4019685 10.165925 2.7284403 9.6622937 3.0165036 9.1749865 3.3765828 8.7040029 3.8614895 L 17.45508 12.584529 V 31.72778 l 6.759455 6.757487 v -4.777051 l -3.378983 -3.379944 0.0021 -15.77387 h 8.226371 l -3.362661 -3.365541 -0.01666 -0.01536 h -4.327634 c 2.828301 -0.288063 5.040724 -2.6453818 5.040724 -5.5394585 0 -3.072676 -2.489347 -5.55530219 -5.562263 -5.55530219 z M 6.3250315 6.1890416 C 5.5938307 7.0004202 4.9600912 8.0422493 4.4214127 9.0648743 l 6.2850623 6.2865027 v 4.777052 L 3.0811978 12.493308 c -0.3552781 1.296286 -0.5526016 2.760608 -0.568445 4.205726 0 0 11.2008162 11.387145 11.5792832 11.777471 V 28.284462 13.95667 Z M 24.223897 14.506391 24.207187 30.826622 H 27.58281 L 27.59952 17.91178 v -0.0052 z m 3.375623 3.394347 3.375623 3.379943 h 4.840953 l -3.377544 -3.379943 z m 3.380904 3.379943 v 9.568026 h 3.378983 V 24.659666 Z M 2.5662845 21.568745 v 4.777051 L 24.221784 48 v -4.777051 z m 35.1708575 5.036308 v 4.27294 h -3.377543 c 0 3.072676 2.490308 5.572106 5.562215 5.572106 3.071717 0 5.565433 -2.482146 5.565433 -5.572106 l -4.371362 -4.27294 z"
+                            Fill="#000000FF"
+                            Name="logoPath" />
+                    </Svg>
+                    <TextBlock
+                        Name="textBlock3"
+                        Text="Title"
+                        Typography="H4" />
+                </StackPanel>
+            </Border>
+        </TablePanel>
+    </Border>
+</Window>
