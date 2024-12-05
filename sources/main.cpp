@@ -1,11 +1,12 @@
 #include <iostream>
 
 #include <AVL_Lite.h>
+#include <UserFilter.h>
+#include <UserFilterLibrary.hxx>
 #include "webcamera.hpp"
 #include "webcamera_manager.hpp"
 #include "main.hpp"
 
-#include "UserFilter.h"
 
 namespace avs
 {
@@ -241,8 +242,9 @@ namespace avs
 		RegisterUserObjects()
 		{
 			// Remember to register every filter exported by the user filter library
-			// RegisterFilter(CreateInstance<WebCameraStartAcquisition>);
-			// RegisterFilter(CreateInstance<MyRunningAverageFilter>);
+			RegisterFilter(CreateInstance<WebCameraStartAcquisition>);
+			RegisterFilter(CreateInstance<WebCameraGrabImage>);
+			RegisterFilter(CreateInstance<WebCameraCloseAcquisition>);
 		}
 	};
 
