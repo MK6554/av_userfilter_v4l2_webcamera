@@ -21,6 +21,8 @@ set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
 set(HEAD_DIR "./headers")
 set(SRC_DIR "./sources")
 
+
+
 # Collect all .cpp files in the src directory
 file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.cpp")
 
@@ -54,6 +56,16 @@ target_link_libraries(${EXE_NAME}
 # Set the output name for the shared library
 set_target_properties(${UF_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+
+if(WIN32)
+    # Windows-specific source files or definitions
+    target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_WINDOWS)
+    target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_WINDOWS)
+elseif(UNIX)
+    # Unix-like (Linux, macOS) specific source files or definitions
+    target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_UNIX)
+    target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_UNIX)
+endif()
 
 # Additional flags for compiling and linking (this is added automatically by CMake when using SHARED)
 set_target_properties(${UF_NAME} PROPERTIES

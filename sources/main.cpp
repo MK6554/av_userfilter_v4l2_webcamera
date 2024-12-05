@@ -12,172 +12,239 @@ namespace avs
 	class WebCameraBase : public UserFilter
 	{
 	protected:
-		std::shared_ptr<WebCamera> get_or_make_device(int index, int width, int height, int framerate, int queue_size)
+		int m_camera_index;
+
+		void disconnect()
 		{
-			auto mng = WebCameraManager::instance();
-			auto existing = mng->get_device(index);
-			if (existing)
+			auto dev = WebCameraManager::instance()->get_device(m_camera_index);
+			if (dev)
 			{
-				return existing;
+				dev->close_acquisition();
+				WebCameraManager::instance()->remove_device(m_camera_index);
 			}
-			std::shared_ptr<WebCamera> newptr = std::make_shared<WebCamera>(index, width, height, framerate, queue_size);
-			mng->add_device(newptr);
-			return newptr;
+		}
+		virtual void add_camera_params()
+		{
+			AddInput(L"inCameraIndex", L"Integer<0, INF>", L"0", L"Device index");
+		}
+		virtual void read_inputs()
+		{
+			ReadInput(L"inCameraIndex", m_camera_index);
 		}
 	};
-// Example image processing filter
-class WebCameraStartAcquisition : public UserFilter
-{
-private:
-	// Non-trivial outputs must be defined as a filed to retain data after filter execution.
-	avl::Image outImage;
-
-public:
-	// Defines the inputs, the outputs and the filter metadata
-	void Define() override
+	class WebCameraBase_Input : public WebCameraBase
 	{
-		SetName(L"WebCameraStartAcquisition");
-		SetCategory(L"Image::Image Thresholding");
-		SetImage(L"CustomThreshold_16.png");
-		SetImageBig(L"CustomThreshold_48.png");
-		SetTip(L"Binarizes 8-bit images");
-
-		//					 Name						Type				Default		Tool-tip
-		AddInput(L"inImage", L"Image", L"", L"Input image");
-		AddInput(L"inThreshold", L"Integer<0, 255>", L"128", L"Threshold value");
-		AddOutput(L"outImage", L"Image", L"Output image");
-	}
-
-	// Computes output from input data
-	int Invoke() override
-	{
-		// Get data from the inputs
-		avl::Image inImage;
-		int inThreshold;
-		// avs::LogInfo("Andrzej Duda czyni cuda !!!!!!!!!!");
-
-		ReadInput(L"inImage", inImage);
-		ReadInput(L"inThreshold", inThreshold);
-
-		if (inImage.Type() != avl::PlainType::UInt8)
-			throw atl::DomainError("Only uint8 pixel type are supported.");
-
-		// Get image properties
-		int height = inImage.Height();
-
-		// Prepare output image in this same format as input
-		outImage.Reset(inImage, atl::NIL);
-
-		// Enumerate each row
-		for (int y = 0; y < height; ++y)
+	protected:
+		int inWidth, inHeight, inFps, inInputQueueSize;
+		std::shared_ptr<WebCamera> m_camera;
+		void get_or_make_device()
 		{
-			// Get row pointers
-			const atl::uint8 *p = inImage.RowBegin<atl::uint8>(y);
-			const atl::uint8 *e = inImage.RowEnd<atl::uint8>(y);
-			atl::uint8 *q = outImage.RowBegin<atl::uint8>(y);
-
-			// Loop over the pixel components
-			while (p < e)
+			auto mng = WebCameraManager::instance();
+			auto existing = mng->get_device(m_camera_index);
+			if (existing)
 			{
-				(*q++) = (*p++) < inThreshold ? 0 : 255;
+				m_camera = existing;
 			}
+			m_camera = std::make_shared<WebCamera>(m_camera_index, inWidth, inHeight, inFps, inInputQueueSize);
+			mng->add_device(m_camera);
 		}
-
-		// Set output data
-		WriteOutput(L"outImage", outImage);
-
-		// Continue program
-		return INVOKE_NORMAL;
-	}
-};
-// 	struct MyRunningAverageState
-// {
-// 	bool isFirstTime;
-// 	float average;
-
-// 	MyRunningAverageState()
-// 		: isFirstTime(true)
-// 		, average(0.0f)
-// 	{
-// 	}
-// };
-// 	// Example filter with state
-// class MyRunningAverageFilter : public avs::UserFilter
-// {
-// private:
-// 	MyRunningAverageState state;
-// 	void MyRunningAverage( MyRunningAverageState& state, float value, float inertia, float& outAverage )
-// {
-// 	if (state.isFirstTime)
-// 	{
-// 		state.average = value;
-// 		state.isFirstTime = false;
-// 	}
-// 	else
-// 	{
-// 		state.average = state.average * inertia + value * (1.0f - inertia);
-// 	}
-
-// 	outAverage = state.average;
-// }
-// public:
-// 	void Define()
-// 	{
-// 		SetName		(L"MyRunningAverage");
-// 		SetCategory	(L"Basic::User Filters");
-// 		SetTip		(L"Calculates a geometrical average of previous average and current value.");
-// 		SetFilterType(avs::FilterType::LoopAccumulator);
-
-// 		//			 Name			Type		Default		Tool-tip
-// 		AddInput	(L"inValue",	L"Real",	L"",		L"");
-// 		AddInput	(L"inInertia",	L"Real",	L"0.9",		L"");
-// 		AddOutput	(L"outAverage",	L"Real",				L"");
-
-// 		// Describe a function that should be used as an equivalent of this filter.
-// 		AddAttribute(L"CodeGenInfo", L"MyFunctions::MyRunningAverage( state: MyFunctions::MyRunningAverageState; in: inValue; in: inInertia; out: outAverage ) Include(\"MyFunctions.h\")");
-// 	}
-
-// 	int Init()
-// 	{
-// 		UserFilter::Init();
-
-// 		state = MyRunningAverageState();
-
-// 		return avs::INIT_OK;
-// 	}
-
-// 	int Invoke()
-// 	{
-// 		float inValue;
-// 		float inInertia;
-// 		float outAverage;
-
-// 		// Get data from the inputs
-// 		ReadInput(L"inValue", inValue);
-// 		ReadInput(L"inInertia", inInertia);
-
-// 		// Use common function to process data
-// 		MyRunningAverage(state, inValue, inInertia, outAverage );
-
-// 		// Set output data
-// 		WriteOutput(L"outAverage", outAverage);
-
-// 		// Continue program
-// 		return avs::INVOKE_NORMAL;
-// 	}
-// };
-
-// Builds the filter factory
-class RegisterUserObjects
-{
-public:
-	RegisterUserObjects()
+		virtual void add_camera_params() override
+		{
+			WebCameraBase::add_camera_params();
+			AddInput(L"inWidth", L"Integer<0, INF>", L"", L"Image width");
+			AddInput(L"inHeight", L"Integer<0, INF>", L"", L"Image height");
+			AddInput(L"inFPS", L"Integer<0, 30>", L"", L"Desired FPS");
+			AddInput(L"inInputQueueSize", L"Integer<1, 255>", L"128", L"Number of incoming frames that can be buffered before the application is able to process them");
+		}
+		virtual void read_inputs() override
+		{
+			WebCameraBase::read_inputs();
+			ReadInput(L"inCameraIndex", m_camera_index);
+			ReadInput(L"inWidth", inWidth);
+			ReadInput(L"inHeight", inHeight);
+			ReadInput(L"inFPS", inFps);
+			ReadInput(L"inInputQueueSize", inInputQueueSize);
+		}
+		int Init() override
+		{
+			read_inputs();
+			get_or_make_device();
+			if (!m_camera->isRunning())
+			{
+				m_camera->start_acqisition();
+			}
+			return INIT_OK;
+		}
+	};
+	// Example image processing filter
+	class WebCameraStartAcquisition : public WebCameraBase_Input
 	{
-		// Remember to register every filter exported by the user filter library
-		// RegisterFilter(CreateInstance<WebCameraStartAcquisition>);
-		// RegisterFilter(CreateInstance<MyRunningAverageFilter>);
-	}
-};
+	private:
+		// Non-trivial outputs must be defined as a filed to retain data after filter execution.
+		avl::Image outImage;
 
-static RegisterUserObjects registerUserObjects;
+	public:
+		// Defines the inputs, the outputs and the filter metadata
+		void Define() override
+		{
+			SetName(L"WebCameraStartAcquisition");
+			SetTip(L"Starts acquisition of V4L webcamera");
+
+			//					 Name						Type				Default		Tool-tip
+			add_camera_params();
+		}
+		int Invoke() override
+		{
+			return INVOKE_LOOP;
+		}
+	};
+	class WebCameraCloseAcquisition : public WebCameraBase
+	{
+	private:
+		// Non-trivial outputs must be defined as a filed to retain data after filter execution.
+
+	public:
+		// Defines the inputs, the outputs and the filter metadata
+		void Define() override
+		{
+			SetName(L"WebCameraStartAcquisition");
+			SetTip(L"Starts acquisition of V4L webcamera");
+
+			//					 Name						Type				Default		Tool-tip
+			add_camera_params();
+		}
+		int Invoke() override
+		{
+			disconnect();
+			return INVOKE_NORMAL;
+		}
+	};
+	class WebCameraGrabImage : public WebCameraBase_Input
+	{
+	private:
+		// Non-trivial outputs must be defined as a filed to retain data after filter execution.
+		avl::Image outImage;
+
+	public:
+		// Defines the inputs, the outputs and the filter metadata
+		void Define() override
+		{
+			SetName(L"WebCameraStartAcquisition");
+			SetTip(L"Starts acquisition of V4L webcamera");
+
+			//					 Name						Type				Default		Tool-tip
+			add_camera_params();
+			AddOutput("outImage", "Image", "Grabbed image");
+			AddOutput("outFps", "Real", "Last reported fps");
+		}
+		int Invoke() override
+		{
+			while (!m_camera->can_grab())
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(5));
+				if (IsWorkCancelled())
+				{
+					outImage.Reset();
+					WriteOutput("outImage", outImage);
+					WriteOutput<float>("outFps", 0.0);
+					return INVOKE_END;
+				}
+			}
+			m_camera->grab_image(outImage);
+			auto fps = (float)m_camera->get_fps();
+			WriteOutput("outImage", outImage);
+			WriteOutput<float>("outFps", fps);
+			return INVOKE_LOOP;
+		}
+	};
+	// 	struct MyRunningAverageState
+	// {
+	// 	bool isFirstTime;
+	// 	float average;
+
+	// 	MyRunningAverageState()
+	// 		: isFirstTime(true)
+	// 		, average(0.0f)
+	// 	{
+	// 	}
+	// };
+	// 	// Example filter with state
+	// class MyRunningAverageFilter : public avs::UserFilter
+	// {
+	// private:
+	// 	MyRunningAverageState state;
+	// 	void MyRunningAverage( MyRunningAverageState& state, float value, float inertia, float& outAverage )
+	// {
+	// 	if (state.isFirstTime)
+	// 	{
+	// 		state.average = value;
+	// 		state.isFirstTime = false;
+	// 	}
+	// 	else
+	// 	{
+	// 		state.average = state.average * inertia + value * (1.0f - inertia);
+	// 	}
+
+	// 	outAverage = state.average;
+	// }
+	// public:
+	// 	void Define()
+	// 	{
+	// 		SetName		(L"MyRunningAverage");
+	// 		SetCategory	(L"Basic::User Filters");
+	// 		SetTip		(L"Calculates a geometrical average of previous average and current value.");
+	// 		SetFilterType(avs::FilterType::LoopAccumulator);
+
+	// 		//			 Name			Type		Default		Tool-tip
+	// 		AddInput	(L"inValue",	L"Real",	L"",		L"");
+	// 		AddInput	(L"inInertia",	L"Real",	L"0.9",		L"");
+	// 		AddOutput	(L"outAverage",	L"Real",				L"");
+
+	// 		// Describe a function that should be used as an equivalent of this filter.
+	// 		AddAttribute(L"CodeGenInfo", L"MyFunctions::MyRunningAverage( state: MyFunctions::MyRunningAverageState; in: inValue; in: inInertia; out: outAverage ) Include(\"MyFunctions.h\")");
+	// 	}
+
+	// 	int Init()
+	// 	{
+	// 		UserFilter::Init();
+
+	// 		state = MyRunningAverageState();
+
+	// 		return avs::INIT_OK;
+	// 	}
+
+	// 	int Invoke()
+	// 	{
+	// 		float inValue;
+	// 		float inInertia;
+	// 		float outAverage;
+
+	// 		// Get data from the inputs
+	// 		ReadInput(L"inValue", inValue);
+	// 		ReadInput(L"inInertia", inInertia);
+
+	// 		// Use common function to process data
+	// 		MyRunningAverage(state, inValue, inInertia, outAverage );
+
+	// 		// Set output data
+	// 		WriteOutput(L"outAverage", outAverage);
+
+	// 		// Continue program
+	// 		return avs::INVOKE_NORMAL;
+	// 	}
+	// };
+
+	// Builds the filter factory
+	class RegisterUserObjects
+	{
+	public:
+		RegisterUserObjects()
+		{
+			// Remember to register every filter exported by the user filter library
+			// RegisterFilter(CreateInstance<WebCameraStartAcquisition>);
+			// RegisterFilter(CreateInstance<MyRunningAverageFilter>);
+		}
+	};
+
+	static RegisterUserObjects registerUserObjects;
 }

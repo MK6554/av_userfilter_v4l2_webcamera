@@ -8,19 +8,20 @@
 #include <fcntl.h>
 #include <fstream>
 #include <iostream>
-#include <linux/videodev2.h>
-#include <opencv2/opencv.hpp>
 #include <string>
 #include <sys/ioctl.h>
 #include <thread>
 #include <unistd.h>
-
+#ifdef PLATFORM_UNIXs
+#include <linux/videodev2.h>
+#include <opencv2/opencv.hpp>
 void sleep(int time_ms)
 {
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
 }
 void WebCamera::start_acqisition()
 {
+  log("Started acquisition of camera " + std::to_string(m_cameraIndex));
   running = true;
   capThread = std::thread(&WebCamera::captureLoop, this);
 }
@@ -45,7 +46,7 @@ bool WebCamera::grab_image_sync()
   }
 }
 
-void WebCamera::close_acqisition()
+void WebCamera::close_acquisition()
 {
   running = false;
   if (capThread.joinable())
@@ -56,11 +57,17 @@ void WebCamera::close_acqisition()
   {
     cap.release();
   }
+  log("Closed acquisition of camera " + std::to_string(m_cameraIndex));
 }
 
 double WebCamera::get_property(int property_id) const
 {
   return cap.get(property_id);
+}
+
+bool WebCamera::can_grab() const
+{
+  return queue.enqueued_frames() > 0;
 }
 
 WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate)
@@ -71,7 +78,7 @@ WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
 
 WebCamera::~WebCamera()
 {
-  close_acqisition();
+  close_acquisition();
 }
 
 void WebCamera::captureLoop()
@@ -155,3 +162,25 @@ void list_supported_framerates(const std::string &devicePath)
 
   close(fd);
 }
+#else
+void WebCamera::start_acqisition() {}
+bool WebCamera::grab_image(avl::Image &image)
+{
+  avl::TestImage(avl::TestImageId::Baboon, image, atl::NIL);
+  return true;
+}
+void WebCamera::close_acquisition() {}
+double WebCamera::get_property(int property_id) const
+{
+  return -1.0;
+};
+WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate)
+    : queue(8), m_cameraIndex(m_cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
+bool WebCamera::can_grab() const
+{
+  return true;
+}
+WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
+                     size_t queue_size) : queue(queue_size), m_cameraIndex(m_cameraIndex), width(width), height(height), framerate(framerate), m_received_frames(0) {}
+WebCamera::~WebCamera() {}
+#endif

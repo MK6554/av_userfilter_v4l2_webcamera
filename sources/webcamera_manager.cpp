@@ -8,7 +8,7 @@ void WebCameraManager::add_device(std::shared_ptr<WebCamera> camera)
     if(get_device(camera->camera_index())){
         throw -12;
     }
-    devices[camera->camera_index()]=camera;
+    devices[camera->camera_index()]=std::move(camera);
 }
 
 std::shared_ptr<WebCamera> WebCameraManager::get_device(int id)
@@ -19,4 +19,9 @@ std::shared_ptr<WebCamera> WebCameraManager::get_device(int id)
         return found->second;
     }
     return std::shared_ptr<WebCamera>(nullptr);
+}
+
+bool WebCameraManager::remove_device(int id)
+{
+    return devices.erase(id);
 }
