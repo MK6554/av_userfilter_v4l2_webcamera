@@ -1,5 +1,5 @@
 #include "cpuStats.hpp"
-
+#ifdef PLATFORM_UNIX
 long ProcessUsage::measureTotalTime()
 {
     std::ifstream file("/proc/stat");
@@ -52,3 +52,9 @@ double ProcessUsage::measure()
 double ProcessUsage::getMeanUsage()const{
     return calc.getMean();
 }
+#else
+long ProcessUsage::measureTotalTime(){return 1;}
+long ProcessUsage::measureProcessTime(){return 1;}
+double ProcessUsage::measure(){return 100;}
+double ProcessUsage::getMeanUsage()const{return 100;}
+#endif

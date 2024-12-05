@@ -1,8 +1,16 @@
 #include "paraqueue.hpp"
 #include "debug_log.hpp"
-#include <AVLConverters/AVL_OpenCV.h>
 #include <iostream>
 #include <mutex>
+#ifdef PLATFORM_UNIX
+#include <AVLConverters/AVL_OpenCV.h>
+#else
+namespace avl{
+	void CVMatToAvlImage_Switched(const cv::Mat &mat, avl::Image& image){
+		avl::TestImage(avl::TestImageId::Baboon,image, atl::NIL);
+	}
+}
+#endif
 
 void ParaQueue::update_times() {
   auto now = CLOCK::now();
@@ -22,7 +30,7 @@ void ParaQueue::update_times() {
 void ParaQueue::push(cv::Mat const &image) {
   std::lock_guard<std::mutex> lock(m_mutex);
   avl::Image avlimg;
-  // avl::CVMatToAvlImage_Switched(image, avlimg);
+  avl::CVMatToAvlImage_Switched(image, avlimg);
   m_queue.push(avlimg);
   update_times();
   while (m_queue.size() > max_queue_size) {

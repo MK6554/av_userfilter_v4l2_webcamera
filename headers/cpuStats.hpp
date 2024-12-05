@@ -5,14 +5,11 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <linux/videodev2.h>
 #include "meanCalculator.hpp"
 class ProcessUsage
 {
 private:
-    pid_t _pid;
+    int _pid;
     MeanCalculator calc;
 
     long measureTotalTime();

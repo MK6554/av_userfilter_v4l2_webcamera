@@ -5,14 +5,14 @@
 #include <UserFilterLog.h>
 #include <chrono>
 #include <debug_log.hpp>
-#include <fcntl.h>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <sys/ioctl.h>
 #include <thread>
-#include <unistd.h>
 #ifdef PLATFORM_UNIX
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
 #include <linux/videodev2.h>
 #include <opencv2/opencv.hpp>
 void sleep(int time_ms)
