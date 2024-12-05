@@ -1,4 +1,4 @@
-#include "meanCalculator.hpp"
+#include "mean_calculator.hpp"
 #include <cstdio>
 void MeanCalculator::append(double value)
 {

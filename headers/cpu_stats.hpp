@@ -5,8 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "meanCalculator.hpp"
-class ProcessUsage
+#include "mean_calculator.hpp"
+class CpuStats
 {
 private:
     int _pid;
@@ -19,7 +19,7 @@ private:
     long lastProcessTime;
 
 public:
-    ProcessUsage(int pid) : _pid(pid) {}
+    CpuStats();
     double measure();
     double getMeanUsage() const;
 };

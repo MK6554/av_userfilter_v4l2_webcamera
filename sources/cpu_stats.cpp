@@ -1,6 +1,7 @@
-#include "cpuStats.hpp"
+#include "cpu_stats.hpp"
 #ifdef PLATFORM_UNIX
-long ProcessUsage::measureTotalTime()
+#include <unistd.h>
+long CpuStats::measureTotalTime()
 {
     std::ifstream file("/proc/stat");
     std::string line;
@@ -15,7 +16,7 @@ long ProcessUsage::measureTotalTime()
     return lastTotalTime;
 }
 
-long ProcessUsage::measureProcessTime()
+long CpuStats::measureProcessTime()
 {
     std::ifstream file("/proc/" + std::to_string(_pid) + "/stat");
     std::string line;
@@ -32,7 +33,11 @@ long ProcessUsage::measureProcessTime()
     return lastProcessTime;
 }
 
-double ProcessUsage::measure()
+CpuStats::CpuStats():_pid(getpid())
+{
+}
+
+double CpuStats::measure()
 {
     auto prevTotal = lastTotalTime;
     auto prevProcess = lastProcessTime;
@@ -49,12 +54,15 @@ double ProcessUsage::measure()
     return usage;
 }
 
-double ProcessUsage::getMeanUsage()const{
+double CpuStats::getMeanUsage()const{
     return calc.getMean();
 }
 #else
 long ProcessUsage::measureTotalTime(){return 1;}
 long ProcessUsage::measureProcessTime(){return 1;}
-double ProcessUsage::measure(){return 100;}
-double ProcessUsage::getMeanUsage()const{return 100;}
+double CpuStats::measure(){return 100;}
+double CpuStats::getMeanUsage()const{return 100;}
+CpuStats::CpuStats():_pid(0)
+{
+}
 #endif

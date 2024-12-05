@@ -15,21 +15,35 @@ set(EXE_NAME "${CMAKE_PROJECT_NAME}_TEST")
 set(HEAD_DIR "./headers")
 set(SRC_DIR "./sources")
 
+set(SRC_CORE
+    ./sources/cpu_stats.cpp
+    ./sources/debug_log.cpp
+    ./sources/mean_calculator.cpp
+    ./sources/paraqueue.cpp
+    ./sources/webcamera_manager.cpp
+    ./sources/webcamera.cpp
+)
+
 # Specify the source directory
 if(WIN32)
     set(AVEXECUTOR_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
     set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib\\x64\\")
     set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include\\")
+    set(SRC_PLATFORM
+        ./sources/opencv.cpp
+    )
 elseif(UNIX)
     find_package(OpenCV REQUIRED)
     set(AVEXECUTOR_DIR "/etc/avexecutor/")
     set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
     set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
+    set(SRC_PLATFORM)
 endif()
 
-# Collect all .cpp files in the src directory
-file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.cpp")
+set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
 
+# Collect all .cpp files in the src directory
+# file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.cpp")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Specify the include directories for avexecutor
@@ -42,7 +56,7 @@ include_directories(${HEAD_DIR})
 link_directories(${AVEXECUTOR_DIR_LIB_DIR})
 
 # Add the shared library target
-add_library(${UF_NAME} SHARED ${SRC_FILES})
+add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
 
 # Link the necessary libraries
@@ -69,12 +83,8 @@ elseif(UNIX)
     # Unix-like (Linux, macOS) specific source files or definitions
     target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_UNIX)
     target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_UNIX)
-    target_link_libraries(${UF_NAME}
-        ${OpenCV_LIBS}
-    )
-    target_link_libraries(${EXE_NAME}
-        ${OpenCV_LIBS}
-    )
+    target_link_libraries(${UF_NAME} ${OpenCV_LIBS})
+    target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
 endif()
 
 # Additional flags for compiling and linking (this is added automatically by CMake when using SHARED)

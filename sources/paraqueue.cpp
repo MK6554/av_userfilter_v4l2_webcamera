@@ -23,11 +23,13 @@ void ParaQueue::update_times() {
 void ParaQueue::push(cv::Mat const &image) {
   std::lock_guard<std::mutex> lock(m_mutex);
   avl::Image avlimg;
+  // cv::resize(image,small,cv::Size(400,400));
   // auto start = std::chrono::steady_clock::now();
   avl::CVMatToAvlImage_Switched(image, avlimg);
+  avl::TestImage(avl::TestImageId::Baboon,avlimg,atl::NIL);
   // auto end = std::chrono::steady_clock::now();
   // std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end-start).count() << std::endl;
-  m_queue.push(avlimg);
+  m_queue.push(std::move(avlimg));
   update_times();
   while (m_queue.size() > max_queue_size) {
     m_queue.pop();
