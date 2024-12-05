@@ -7,7 +7,6 @@
 #include "webcamera_manager.hpp"
 #include "main.hpp"
 
-
 namespace avs
 {
 	class WebCameraBase : public UserFilter
@@ -135,26 +134,33 @@ namespace avs
 
 			//					 Name						Type				Default		Tool-tip
 			add_camera_params();
-			AddOutput("outImage", "Image", "Grabbed image");
-			AddOutput("outFPS", "Real", "Last reported fps");
+			AddOutput(L"outImage", L"Image", L"Grabbed image");
+			AddOutput(L"outFPS", L"Real", L"Last reported fps");
 		}
 		int Invoke() override
 		{
+			avl::TestImage(avl::TestImageId::Baboon, outImage);
+			WriteOutput(L"outImage", outImage);
+			WriteOutput<float>(L"outFPS", (float)m_camera->can_grab());
+			return INVOKE_LOOP;
 			while (!m_camera->can_grab())
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(5));
 				if (IsWorkCancelled())
 				{
 					outImage.Reset();
-					WriteOutput("outImage", outImage);
-					WriteOutput<float>("outFPS", 0.0);
+					WriteOutput(L"outImage", outImage);
+					WriteOutput<float>(L"outFPS", 0.0);
 					return INVOKE_END;
 				}
+				WriteOutput(L"outImage", outImage);
+				WriteOutput<float>(L"outFPS", 1.0);
+				return INVOKE_LOOP;
 			}
 			m_camera->grab_image(outImage);
 			auto fps = (float)m_camera->get_fps();
-			WriteOutput("outImage", outImage);
-			WriteOutput<float>("outFPS", fps);
+			WriteOutput(L"outImage", outImage);
+			WriteOutput<float>(L"outFPS", fps);
 			return INVOKE_LOOP;
 		}
 	};

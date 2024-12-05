@@ -10,7 +10,25 @@ public Main()
 		inFPS: 30
 		inInputQueueSize: 16
 		outImage: con_2e5ed782_9ee4_4e9c_a25e_4544715432b6
-		outFPS: con_26ad3061_5af9_4fbd_ad94_8c313fcb2183
+		outFPS: Nil
+	)
+
+	//:HIDDENPORT[inStart] TRUE
+	//:HIDDENPORT[inCount] TRUE
+	//:HIDDENPORT[inDelay] TRUE
+	//:HIDDENPORT[inRepeat] TRUE
+	//:HIDDENPORT[outIsFirst] TRUE
+	//:HIDDENPORT[outIsLast] TRUE
+	EnumerateIntegers
+	(
+		inStart: 0
+		inCount: Nil
+		inStep: 1
+		inDelay: 0
+		inRepeat: False
+		outValue: con_26ad3061_5af9_4fbd_ad94_8c313fcb2183
+		outIsFirst: Nil
+		outIsLast: Nil
 	)
 
 	Delay
@@ -19,7 +37,7 @@ public Main()
 	)
 }
 
-public WebCameraGrabImage(Integer inCameraIndex, Integer inWidth, Integer inHeight, Integer inFPS, Integer inInputQueueSize, Image outImage, Real outFPS) step
+public WebCameraGrabImage2(Integer inCameraIndex, Integer inWidth, Integer inHeight, Integer inFPS, Integer inInputQueueSize, Image outImage, Real outFPS) step
 {
 	//:HIDDENPORT[inImageId] TRUE
 	TestImage
