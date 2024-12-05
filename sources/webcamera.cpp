@@ -108,7 +108,8 @@ void WebCamera::captureLoop()
     }
     cap.retrieve(frame);
     m_received_frames++;
-    queue.push(frame);
+    queue.push(std::move(frame));
+    // sleep(15);
   }
 }
 

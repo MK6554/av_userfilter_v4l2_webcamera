@@ -6,15 +6,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <queue>
-#ifdef PLATFORM_UNIX
-#include <opencv2/opencv.hpp>
-#else
-namespace cv{
-	struct Mat{};
-	struct VideoCapture{};
-	int CAP_PROP_FPS=0;
-}
-#endif
+#include "opencv.hpp"
 
 using CLOCK = std::chrono::steady_clock;
 using UNIT = std::chrono::duration<double,std::milli>;

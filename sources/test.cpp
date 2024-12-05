@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <unistd.h>
 #include "cpuStats.hpp"
 #include "debug_log.hpp"
 int main(int argc, char *argv[]) {
@@ -20,6 +21,6 @@ int main(int argc, char *argv[]) {
       <<", CPU: " <<std::fixed <<std::setprecision (2)<<calc.getMeanUsage()<<"%"
       <<std::flush;
     }
-     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+     std::this_thread::sleep_for(std::chrono::milliseconds(200));
   }
 }
