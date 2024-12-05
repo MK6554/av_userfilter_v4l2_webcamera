@@ -20,16 +20,15 @@ void ParaQueue::update_times() {
   period = p;
 }
 
-void ParaQueue::push(cv::Mat const &image) {
+void ParaQueue::push(const cv::Mat &image) {
   std::lock_guard<std::mutex> lock(m_mutex);
-  avl::Image avlimg;
   // cv::resize(image,small,cv::Size(400,400));
   // auto start = std::chrono::steady_clock::now();
-  avl::CVMatToAvlImage_Switched(image, avlimg);
-  avl::TestImage(avl::TestImageId::Baboon,avlimg,atl::NIL);
+  // avl::CVMatToAvlImage_Switched(image, avlimg);
+  // avl::TestImage(avl::TestImageId::Baboon,avlimg,atl::NIL);
   // auto end = std::chrono::steady_clock::now();
   // std::cout << std::chrono::duration_cast<std::chrono::microseconds>(end-start).count() << std::endl;
-  m_queue.push(std::move(avlimg));
+  m_queue.push(std::move(image));
   update_times();
   while (m_queue.size() > max_queue_size) {
     m_queue.pop();
@@ -41,7 +40,8 @@ bool ParaQueue::pop(avl::Image &image) {
   if (m_queue.empty()) {
     return false;
   }
-  image = m_queue.front();
+  auto cvMat = m_queue.front();
+  avl::CVMatToAvlImage_Linked(cvMat, image);
   m_queue.pop();
   return true;
 }

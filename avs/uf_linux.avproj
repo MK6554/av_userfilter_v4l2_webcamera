@@ -2,6 +2,6 @@
   <Files>
     <Program Path="uf_linux.avcode" />
     <View Path="uf_linux.avview" />
-    <UserFilters Path64="/home/mk6554/Repos/TestUserFilter_Keba/build/libUserFilterLibrary.so" />
+    <UserFilters Path64="../build/libUfWebCameraV4L.so" />
   </Files>
 </AuroraVisionProject>

@@ -13,7 +13,7 @@ using UNIT = std::chrono::duration<double,std::milli>;
 
 class ParaQueue {
 public:
-  void push(cv::Mat const &image);
+  void push(const cv::Mat &image);
   bool pop(avl::Image &image);
   bool has_enqueued() const;
   bool is_empty() const;
@@ -25,7 +25,7 @@ private:
   int max_queue_size;
   mutable std::mutex m_mutex;
   mutable std::mutex m_period_mutex;
-  std::queue<avl::Image> m_queue;
+  std::queue<cv::Mat> m_queue;
   std::queue<std::chrono::time_point<CLOCK>> time_queue;
   UNIT period;
   void update_times();

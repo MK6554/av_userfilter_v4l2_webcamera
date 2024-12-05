@@ -108,8 +108,8 @@ namespace avs
 		// Defines the inputs, the outputs and the filter metadata
 		void Define() override
 		{
-			SetName(L"WebCameraStartAcquisition");
-			SetTip(L"Starts acquisition of V4L webcamera");
+			SetName(L"WebCameraCloseAcquisition");
+			SetTip(L"Closes acquisition of V4L webcamera");
 
 			//					 Name						Type				Default		Tool-tip
 			add_camera_params();
@@ -130,13 +130,13 @@ namespace avs
 		// Defines the inputs, the outputs and the filter metadata
 		void Define() override
 		{
-			SetName(L"WebCameraStartAcquisition");
-			SetTip(L"Starts acquisition of V4L webcamera");
+			SetName(L"WebCameraGrabImage");
+			SetTip(L"Grabs an image from the V4L camera, optionally starting the acquisition beforehand.");
 
 			//					 Name						Type				Default		Tool-tip
 			add_camera_params();
 			AddOutput("outImage", "Image", "Grabbed image");
-			AddOutput("outFps", "Real", "Last reported fps");
+			AddOutput("outFPS", "Real", "Last reported fps");
 		}
 		int Invoke() override
 		{
@@ -147,14 +147,14 @@ namespace avs
 				{
 					outImage.Reset();
 					WriteOutput("outImage", outImage);
-					WriteOutput<float>("outFps", 0.0);
+					WriteOutput<float>("outFPS", 0.0);
 					return INVOKE_END;
 				}
 			}
 			m_camera->grab_image(outImage);
 			auto fps = (float)m_camera->get_fps();
 			WriteOutput("outImage", outImage);
-			WriteOutput<float>("outFps", fps);
+			WriteOutput<float>("outFPS", fps);
 			return INVOKE_LOOP;
 		}
 	};
