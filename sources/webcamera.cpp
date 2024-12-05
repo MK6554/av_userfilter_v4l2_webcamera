@@ -12,7 +12,7 @@
 #include <sys/ioctl.h>
 #include <thread>
 #include <unistd.h>
-#ifdef PLATFORM_UNIXs
+#ifdef PLATFORM_UNIX
 #include <linux/videodev2.h>
 #include <opencv2/opencv.hpp>
 void sleep(int time_ms)
