@@ -2,38 +2,42 @@
 //:USETYPE WORKERTASK
 public Main()
 {
-	//:HIDDENPORT[inStart] TRUE
-	//:HIDDENPORT[inCount] TRUE
-	//:HIDDENPORT[inDelay] TRUE
-	//:HIDDENPORT[inRepeat] TRUE
-	//:HIDDENPORT[outIsFirst] TRUE
-	//:HIDDENPORT[outIsLast] TRUE
-	EnumerateIntegers
-	(
-		inStart: 0
-		inCount: Nil
-		inStep: 1
-		inDelay: 0
-		inRepeat: False
-		outValue: con_92548b73_8a5c_406e_8b5a_0a838d4b7028
-		outIsFirst: Nil
-		outIsLast: Nil
-	)
-
 	WebCameraGrabImage
 	(
 		inCameraIndex: 0
-		inWidth: 2952
+		inWidth: 2592
 		inHeight: 1944
 		inFPS: 30
 		inInputQueueSize: 16
-		outImage: Nil
-		outFPS: Nil
+		outImage: con_2e5ed782_9ee4_4e9c_a25e_4544715432b6
+		outFPS: con_26ad3061_5af9_4fbd_ad94_8c313fcb2183
 	)
 
 	Delay
 	(
-		inTime: 150
+		inTime: 50
 	)
+}
+
+public WebCameraGrabImage(Integer inCameraIndex, Integer inWidth, Integer inHeight, Integer inFPS, Integer inInputQueueSize, Image outImage, Real outFPS) step
+{
+	//:HIDDENPORT[inImageId] TRUE
+	TestImage
+	(
+		inImageId: Baboon
+		outRgbImage: con_07513443_feb3_481b_84ff_8f5c017516a4
+		outMonoImage: Nil
+	)
+
+	//:HIDDENPORT[inDelay] TRUE
+	Loop
+	(
+		inShouldLoop: True
+		inDelay: 0
+	)
+
+	outImage = con_07513443_feb3_481b_84ff_8f5c017516a4
+
+	outFPS = 12.000000
 }
 

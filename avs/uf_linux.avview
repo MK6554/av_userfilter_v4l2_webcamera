@@ -1,15 +1,9 @@
 ﻿<ViewSets Current="Custom1">
   <ViewSet Name="Custom1">
     <HSplit>
-      <Views Width="0.998" Height="0.494">
+      <Views Width="0.998" Height="0.996">
+        <WebHmiView />
         <View />
-      </Views>
-      <Views Width="0.998" Height="0.498">
-        <View Type="TextView">
-          <Input Name="inValue" Index="1" Section="Process" Macro="Main" Start="Main" Instance="0" />
-          <Input Name="inInertia" Index="1" Section="Process" Macro="Main" Start="Main" Instance="0" />
-          <Output Name="con_d6a0ee41_5dfa_4700_9f2b_3f5fe332f575" Macro="Main" Start="Main" Instance="0" />
-        </View>
       </Views>
     </HSplit>
   </ViewSet>

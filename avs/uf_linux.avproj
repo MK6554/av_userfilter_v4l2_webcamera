@@ -1,7 +1,9 @@
-﻿<AuroraVisionProject Name="uf_linux" Version="5.5.2" Revision="78691" Product="Professional" StartUpProgramName="Main">
+﻿<AuroraVisionProject Name="uf_linux" Version="5.5.2" Revision="78705" Product="Professional" StartUpProgramName="Main">
   <Files>
     <Program Path="uf_linux.avcode" />
     <View Path="uf_linux.avview" />
+    <WebHMI Path="uf_linux.hxaml" />
     <UserFilters Path64="../build/libUfWebCameraV4L.so" />
   </Files>
+  <AutoPreview>con_2e5ed782_9ee4_4e9c_a25e_4544715432b6</AutoPreview>
 </AuroraVisionProject>
