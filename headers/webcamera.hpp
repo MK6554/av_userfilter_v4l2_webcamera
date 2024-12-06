@@ -8,10 +8,9 @@ class WebCamera{
     void start_acqisition();
     int camera_index()const{return m_cameraIndex;}
     bool grab_image(avl::Image& image);
-    bool grab_image_sync();
     void close_acquisition();
     double get_property(int property_id)const;
-    bool isRunning() const {return true;}
+    bool isRunning() const {return running;}
     double get_fps()const{return queue.get_fps();}
     bool can_grab()const;
     size_t received_frames()const{return m_received_frames.load();}

@@ -40,8 +40,10 @@ bool ParaQueue::pop(avl::Image &image) {
   if (m_queue.empty()) {
     return false;
   }
-  auto cvMat = m_queue.front();
-  avl::CVMatToAvlImage_Linked(cvMat, image);
+  auto bgr = m_queue.front();
+  cv::Mat rgb;
+  cv::cvtColor(bgr,rgb,cv::COLOR_BGR2RGB);
+  avl::CVMatToAvlImage_Linked(bgr, image);
   m_queue.pop();
   return true;
 }

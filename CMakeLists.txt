@@ -60,15 +60,14 @@ add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
 
 # Link the necessary libraries
-target_link_libraries(${UF_NAME}
+target_link_libraries(${UF_NAME} PUBLIC
     AVL_Lite # Assuming this is available in the specified library directory
     UserFilters # Assuming this is available in the specified library directory
-    ${OpenCV_LIBS}
+    # ${OpenCV_LIBS}
 )
-target_link_libraries(${EXE_NAME}
+target_link_libraries(${EXE_NAME} ${UF_NAME} 
     AVL_Lite # Assuming this is available in the specified library directory
     UserFilters # Assuming this is available in the specified library directory
-    ${OpenCV_LIBS}
 )
 
 # Set the output name for the shared library
@@ -83,7 +82,7 @@ elseif(UNIX)
     # Unix-like (Linux, macOS) specific source files or definitions
     target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_UNIX)
     target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_UNIX)
-    target_link_libraries(${UF_NAME} ${OpenCV_LIBS})
+    target_link_libraries(${UF_NAME}  PUBLIC ${OpenCV_LIBS})
     target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
 endif()
 
