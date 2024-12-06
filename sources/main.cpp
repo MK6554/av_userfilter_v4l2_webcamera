@@ -6,6 +6,7 @@
 #include "webcamera.hpp"
 #include "webcamera_manager.hpp"
 #include "main.hpp"
+#include "debug_log.hpp"
 
 namespace avs
 {
@@ -139,12 +140,13 @@ namespace avs
 		}
 		int Invoke() override
 		{
-			avl::TestImage(avl::TestImageId::Baboon, outImage);
-			WriteOutput(L"outImage", outImage);
-			WriteOutput<float>(L"outFPS", (float)m_camera->can_grab());
-			return INVOKE_LOOP;
+			// avl::TestImage(avl::TestImageId::Baboon, outImage);
+			// WriteOutput(L"outImage", outImage);
+			// WriteOutput<float>(L"outFPS", (float)m_camera->can_grab());
+			// return INVOKE_LOOP;
 			while (!m_camera->can_grab())
 			{
+				log("MY HEAD'S SPINNING");
 				std::this_thread::sleep_for(std::chrono::milliseconds(5));
 				if (IsWorkCancelled())
 				{
