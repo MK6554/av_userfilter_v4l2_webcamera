@@ -31,14 +31,7 @@ bool WebCamera::grab_image(avl::Image &image) {
   return false;
 }
 
-bool WebCamera::grab_image_sync() {
-  cv::VideoCapture cap(0, cv::CAP_V4L);
-  cv::Mat mat;
-  while (true) {
-    cap.retrieve(mat);
-    std::cout << mat.size << std::endl;
-  }
-}
+
 
 void WebCamera::close_acquisition() {
   running = false;
@@ -68,7 +61,6 @@ WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
       running(false) {}
 
 WebCamera::~WebCamera() { close_acquisition(); }
-
 void WebCamera::captureLoop() {
   cap.open(m_cameraIndex, cv::CAP_V4L);
   cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
@@ -91,6 +83,7 @@ void WebCamera::captureLoop() {
     if (!cap.grab()) {
       continue;
     }
+    // cv::Mat _img;
     cap.retrieve(frame);
     m_received_frames++;
     queue.push(std::move(frame));
