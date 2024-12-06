@@ -1,10 +1,12 @@
-#include "cpu_stats.hpp"
-#include "debug_log.hpp"
-#include "webcamera.hpp"
+// #include "cpu_stats.hpp"
+// #include "debug_log.hpp"
+// #include "webcamera.hpp"
+// #include "webcamera_manager.hpp"
+// #include <chrono>
+// #include <iostream>
+// #include <thread>
 #include "webcamera_manager.hpp"
-#include <chrono>
-#include <iostream>
-#include <thread>
+#include "webcamera.hpp"
 int main(int argc, char *argv[]) {
   auto s = std::make_shared<WebCamera>(0, 2592, 1944, 30, 100);
   WebCameraManager::instance()->add_device(s);
