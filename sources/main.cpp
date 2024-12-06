@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <AVL_Lite.h>
 #include <UserFilter.h>
 #include <UserFilterLibrary.hxx>
