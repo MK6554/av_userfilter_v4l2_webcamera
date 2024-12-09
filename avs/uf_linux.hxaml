@@ -18,10 +18,10 @@
             Padding="10px"
             TablePanel.Row="1">
             <PictureBox
-                Height="256px"
+                Height="600px"
                 Name="pictureBox1"
                 Source="{Binding @con_2e7320fb_0e9d_40a0_9ff1_7f204f367dd5}"
-                Width="256px" />
+                Width="800px" />
         </Border>
         <Border
             Background="White"
@@ -39,7 +39,7 @@
                 Spacing="5px">
                 <Slider
                     InitialValue="30"
-                    Maximum="500"
+                    Maximum="200"
                     Minimum="5"
                     Name="slider1"
                     Step="5" />
