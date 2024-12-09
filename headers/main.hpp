@@ -16,7 +16,7 @@ protected:
 
 class WebCameraBase_Input : public WebCameraBase {
 protected:
-    int inWidth, inHeight, inFps, inInputQueueSize;
+    int inWidth, inHeight, inFps;
     std::shared_ptr<WebCamera> m_camera;
     void get_or_make_device();
     virtual void add_camera_params() override;
@@ -28,6 +28,18 @@ class WebCameraStartAcquisition : public WebCameraBase_Input {
 private:
     avl::Image outImage;
 
+public:
+    void Define() override;
+    int Invoke() override;
+};
+class WebCameraSetParameter : public WebCameraBase {
+private:
+public:
+    void Define() override;
+    int Invoke() override;
+};
+class WebCameraGetParameter : public WebCameraBase {
+private:
 public:
     void Define() override;
     int Invoke() override;

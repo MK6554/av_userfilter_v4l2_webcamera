@@ -1,5 +1,4 @@
 #include "cpu_stats.hpp"
-#ifdef PLATFORM_UNIX
 #include <unistd.h>
 long CpuStats::measureTotalTime()
 {
@@ -57,12 +56,3 @@ double CpuStats::measure()
 double CpuStats::getMeanUsage()const{
     return calc.getMean();
 }
-#else
-long ProcessUsage::measureTotalTime(){return 1;}
-long ProcessUsage::measureProcessTime(){return 1;}
-double CpuStats::measure(){return 100;}
-double CpuStats::getMeanUsage()const{return 100;}
-CpuStats::CpuStats():_pid(0)
-{
-}
-#endif

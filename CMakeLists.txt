@@ -16,30 +16,28 @@ set(HEAD_DIR "./headers")
 set(SRC_DIR "./sources")
 
 set(SRC_CORE
-    ./sources/cpu_stats.cpp
     ./sources/debug_log.cpp
-    ./sources/mean_calculator.cpp
     ./sources/paraqueue.cpp
     ./sources/webcamera_manager.cpp
     ./sources/webcamera.cpp
 )
 
 # Specify the source directory
-if(WIN32)
-    set(AVEXECUTOR_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
-    set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib\\x64\\")
-    set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include\\")
-    set(SRC_PLATFORM
-        ./sources/opencv.cpp
-    )
-elseif(UNIX)
-    find_package(OpenCV REQUIRED)
-    set(AVEXECUTOR_DIR "/etc/avexecutor/")
-    set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
-    set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
-    set(SRC_PLATFORM)
-endif()
+# if(WIN32)
+# set(AVEXECUTOR_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
+# set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib\\x64\\")
+# set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include\\")
+# set(SRC_PLATFORM
+# ./sources/opencv.cpp
+# )
+# elseif(UNIX)
+find_package(OpenCV REQUIRED)
+set(AVEXECUTOR_DIR "/etc/avexecutor/")
+set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
+set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
+set(SRC_PLATFORM)
 
+# endif()
 set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
 
 # Collect all .cpp files in the src directory
@@ -63,9 +61,10 @@ add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
 target_link_libraries(${UF_NAME} PUBLIC
     AVL_Lite # Assuming this is available in the specified library directory
     UserFilters # Assuming this is available in the specified library directory
+
     # ${OpenCV_LIBS}
 )
-target_link_libraries(${EXE_NAME} ${UF_NAME} 
+target_link_libraries(${EXE_NAME} ${UF_NAME}
     AVL_Lite # Assuming this is available in the specified library directory
     UserFilters # Assuming this is available in the specified library directory
 )
@@ -74,17 +73,18 @@ target_link_libraries(${EXE_NAME} ${UF_NAME}
 set_target_properties(${UF_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
-if(WIN32)
-    # Windows-specific source files or definitions
-    target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_WINDOWS)
-    target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_WINDOWS)
-elseif(UNIX)
-    # Unix-like (Linux, macOS) specific source files or definitions
-    target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_UNIX)
-    target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_UNIX)
-    target_link_libraries(${UF_NAME}  PUBLIC ${OpenCV_LIBS})
-    target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
-endif()
+# if(WIN32)
+# # Windows-specific source files or definitions
+# target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_WINDOWS)
+# target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_WINDOWS)
+# elseif(UNIX)
+# Unix-like (Linux, macOS) specific source files or definitions
+target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_UNIX)
+target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_UNIX)
+target_link_libraries(${UF_NAME} PUBLIC ${OpenCV_LIBS})
+target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
+
+# endif()
 
 # Additional flags for compiling and linking (this is added automatically by CMake when using SHARED)
 set_target_properties(${UF_NAME} PROPERTIES

@@ -1,7 +1,7 @@
 #include "webcamera.hpp"
 #include "webcamera_manager.hpp"
 int main(int argc, char *argv[]) {
-  auto s = std::make_shared<WebCamera>(0, 2592/4, 1944/4, 30, 24);
+  auto s = std::make_shared<WebCamera>(0, 2592/1, 1944/1, 30);
   WebCameraManager::instance()->add_device(s);
   auto m_camera = WebCameraManager::instance()->get_device(0);
   if (!m_camera->isRunning()) {

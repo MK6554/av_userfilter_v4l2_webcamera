@@ -5,15 +5,14 @@
 #include <UserFilterLog.h>
 #include <chrono>
 #include <debug_log.hpp>
+#include <fcntl.h>
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <thread>
-#ifdef PLATFORM_UNIX
-#include <fcntl.h>
 #include <linux/videodev2.h>
 #include <opencv2/opencv.hpp>
+#include <string>
 #include <sys/ioctl.h>
+#include <thread>
 #include <unistd.h>
 void sleep(int time_ms) {
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
@@ -31,8 +30,6 @@ bool WebCamera::grab_image(avl::Image &image) {
   return false;
 }
 
-
-
 void WebCamera::close_acquisition() {
   running = false;
   if (capThread.joinable()) {
@@ -48,17 +45,15 @@ double WebCamera::get_property(int property_id) const {
   return cap.get(property_id);
 }
 
-bool WebCamera::can_grab() const { return queue.enqueued_frames() > 0; }
+bool WebCamera::set_property(int property_id, double value) {
+  return cap.set(property_id, value);
+}
+
+bool WebCamera::can_grab() const { return queue.has_enqueued(); }
 
 WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate)
-    : queue(8), m_cameraIndex(m_cameraIndex), width(width), height(height),
+    : queue(16), m_cameraIndex(m_cameraIndex), width(width), height(height),
       framerate(framerate), m_received_frames(0), running(false) {}
-
-WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
-                     size_t queue_size)
-    : queue(queue_size), m_cameraIndex(m_cameraIndex), width(width),
-      height(height), framerate(framerate), m_received_frames(0),
-      running(false) {}
 
 WebCamera::~WebCamera() { close_acquisition(); }
 void WebCamera::captureLoop() {
@@ -66,6 +61,8 @@ void WebCamera::captureLoop() {
   cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
   cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
   cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+  cap.set(cv::CAP_PROP_EXPOSURE, 300);
+  cap.set(cv::CAP_PROP_AUTO_EXPOSURE, 0);
   // cap.set(cv::CAP_PROP_EXPOSURE, height);
   sleep(50);
   cap.set(cv::CAP_PROP_FPS, framerate);
@@ -134,21 +131,3 @@ void list_supported_framerates(const std::string &devicePath) {
 
   close(fd);
 }
-#else
-void WebCamera::start_acqisition() {}
-bool WebCamera::grab_image(avl::Image &image) {
-  avl::TestImage(avl::TestImageId::Baboon, image, atl::NIL);
-  return true;
-}
-void WebCamera::close_acquisition() {}
-double WebCamera::get_property(int property_id) const { return -1.0; };
-WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate)
-    : queue(8), m_cameraIndex(m_cameraIndex), width(width), height(height),
-      framerate(framerate), m_received_frames(0) {}
-bool WebCamera::can_grab() const { return true; }
-WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
-                     size_t queue_size)
-    : queue(queue_size), m_cameraIndex(m_cameraIndex), width(width),
-      height(height), framerate(framerate), m_received_frames(0) {}
-WebCamera::~WebCamera() {}
-#endif

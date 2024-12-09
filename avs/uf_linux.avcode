@@ -1,3 +1,5 @@
+extern public Real whmi_con_slider1_Value = 0.000000
+
 //:SECTIONSVISIBILITY Disabled
 //:USETYPE WORKERTASK
 public Main()
@@ -9,8 +11,114 @@ public Main()
 		inHeight: 1944
 		inFPS: 30
 		inInputQueueSize: 16
-		outImage: con_2e5ed782_9ee4_4e9c_a25e_4544715432b6
-		outFPS: con_26ad3061_5af9_4fbd_ad94_8c313fcb2183
+		outImage: con_2e7320fb_0e9d_40a0_9ff1_7f204f367dd5
+		outFPS: con_86027c82_9a4f_405b_b810_56cd1f396427
+	)
+
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatRealToString
+	(
+		inReal: con_86027c82_9a4f_405b_b810_56cd1f396427
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 0
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: ""
+		outString: con_693ca9f7_fcb4_4e1e_bbde_019050a2a70b
+	)
+
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: con_693ca9f7_fcb4_4e1e_bbde_019050a2a70b
+		inString2: " FPS"
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_874c89b0_41ed_41d9_bfdb_67b7ca0edda2
+	)
+
+	CopyObject<Real>
+	(
+		inObject: whmi_con_slider1_Value
+		outObject: con_1504e7c2_5261_4852_9910_f9ea11c89a4b
+	)
+
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatRealToString
+	(
+		inReal: con_1504e7c2_5261_4852_9910_f9ea11c89a4b
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 0
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: ""
+		outString: con_ce02f626_9254_4f7a_96b7_214214d9adbb
+	)
+
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: con_ce02f626_9254_4f7a_96b7_214214d9adbb
+		inString2: " ms exposure"
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_79fbdbf8_6060_4cbd_a577_a85f4228c6b0
+	)
+
+	//:HIDDENPORT[inD] TRUE
+	//:HIDDENPORT[inE] TRUE
+	//:HIDDENPORT[inF] TRUE
+	//:HIDDENPORT[inG] TRUE
+	//:HIDDENPORT[inH] TRUE
+	MultiplyReals
+	(
+		inA: con_1504e7c2_5261_4852_9910_f9ea11c89a4b
+		inB: 10.000000
+		inC: 1.000000
+		inD: 1.000000
+		inE: 1.000000
+		inF: 1.000000
+		inG: 1.000000
+		inH: 1.000000
+		outProduct: con_5f1290c2_4a7e_4c9f_b464_537b93e4232d
+	)
+
+	//Exposure - 15
+	//time in ms * 10
+	WebCameraSetParameter
+	(
+		inCameraIndex: 0
+		inParameterId: 15
+		inParameterValue: con_5f1290c2_4a7e_4c9f_b464_537b93e4232d
+		outSuccess: Nil
 	)
 
 	//:HIDDENPORT[inStart] TRUE
@@ -29,11 +137,6 @@ public Main()
 		outValue: Nil
 		outIsFirst: Nil
 		outIsLast: Nil
-	)
-
-	Delay
-	(
-		inTime: 50
 	)
 }
 
