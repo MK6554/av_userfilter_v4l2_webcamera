@@ -8,6 +8,7 @@ set(PROJECT_VERSION 1.0)
 # Set the C++ standard for the project (you can change this if needed)
 set(CMAKE_CXX_STANDARD 17)
 
+
 # Specify the version (optional)
 set(UF_NAME ${CMAKE_PROJECT_NAME})
 set(EXE_NAME "${CMAKE_PROJECT_NAME}_TEST")
@@ -32,6 +33,10 @@ set(SRC_CORE
 # )
 # elseif(UNIX)
 find_package(OpenCV REQUIRED)
+
+find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
+
+
 set(AVEXECUTOR_DIR "/etc/avexecutor/")
 set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
 set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
@@ -57,13 +62,8 @@ link_directories(${AVEXECUTOR_DIR_LIB_DIR})
 add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
 
-# add_custom_command(
-#     TARGET ${UF_NAME}
-#     POST_BUILD
-#     COMMAND include-what-you-use $<TARGET_OBJECTS:${UF_NAME}> -- -I ${CMAKE_SOURCE_DIR} ${CMAKE_CXX_FLAGS}
-#     COMMENT "Running IWYU"
-#     VERBATIM
-# )
+# set_property(TARGET ${UF_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+
 
 # Link the necessary libraries
 target_link_libraries(${UF_NAME} PUBLIC

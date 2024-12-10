@@ -73,5 +73,10 @@
         "strstream": "cpp",
         "cfenv": "cpp",
         "valarray": "cpp"
-    }
+    },
+    "spellright.ignoreFiles": [
+        "**/.gitignore",
+        "**/.spellignore",
+        "avs/**"
+    ]
 }
