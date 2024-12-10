@@ -14,76 +14,97 @@
 #include <sys/ioctl.h>
 #include <thread>
 #include <unistd.h>
+#define MAX_DIM 65535
 void sleep(int time_ms) {
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
 }
-void WebCamera::start_acqisition() {
-  log("Started acquisition of camera " + std::to_string(m_cameraIndex));
-  running = true;
-  capThread = std::thread(&WebCamera::captureLoop, this);
+void WebCamera::start_acquisition() {
+  m_running = true;
+  m_cap_thread = std::thread(&WebCamera::captureLoop, this);
 }
 
 bool WebCamera::grab_image(avl::Image &image) {
-  if (queue.has_enqueued()) {
-    return queue.pop(image);
+  if (m_queue.has_enqueued()) {
+    return m_queue.pop(image);
   }
   return false;
 }
 
 void WebCamera::close_acquisition() {
-  running = false;
-  if (capThread.joinable()) {
-    capThread.join();
+  m_running = false;
+  if (m_cap_thread.joinable()) {
+    m_cap_thread.join();
   }
-  if (cap.isOpened()) {
-    cap.release();
+  if (m_capture.isOpened()) {
+    m_capture.release();
   }
-  log("Closed acquisition of camera " + std::to_string(m_cameraIndex));
+  log("Closed acquisition of camera " + std::to_string(m_camera_index));
 }
 
 double WebCamera::get_property(int property_id) const {
-  return cap.get(property_id);
+  return m_capture.get(property_id);
 }
 
 bool WebCamera::set_property(int property_id, double value) {
-  return cap.set(property_id, value);
+  return m_capture.set(property_id, value);
 }
 
-bool WebCamera::can_grab() const { return queue.has_enqueued(); }
+bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
 
-WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate)
-    : queue(16), m_cameraIndex(m_cameraIndex), width(width), height(height),
-      framerate(framerate), m_received_frames(0), running(false) {}
+void WebCamera::set_max_framerate(int new_max) {
+  m_max_framerate=new_max;
+  m_queue.set_max_frequency_hz(new_max);
+}
+
+void
+WebCamera::set_exposure(long time_ms)
+{
+  set_exposure(std::chrono::milliseconds(time_ms));
+}
+
+void
+WebCamera::set_exposure(std::chrono::milliseconds millis)
+{
+  m_exposure = millis;
+  m_capture.set(cv::CAP_PROP_EXPOSURE,m_exposure.count());
+}
+
+WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate, long exposure_ms)
+    : m_queue(framerate), m_camera_index(m_cameraIndex), m_width(width), 
+      m_height(height), m_max_framerate(framerate), m_running(false), m_exposure(exposure_ms) {}
 
 WebCamera::~WebCamera() { close_acquisition(); }
 void WebCamera::captureLoop() {
-  cap.open(m_cameraIndex, cv::CAP_V4L);
-  cap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
-  cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
-  cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
-  cap.set(cv::CAP_PROP_EXPOSURE, 300);
-  cap.set(cv::CAP_PROP_AUTO_EXPOSURE, 0);
+  m_capture.open(m_camera_index, cv::CAP_V4L);
+  m_capture.set(cv::CAP_PROP_FOURCC,
+                cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+  auto width = m_width < 0 ? MAX_DIM : m_width;
+  auto height = m_height < 0 ? MAX_DIM : m_height;
+  m_capture.set(cv::CAP_PROP_FRAME_WIDTH, width);
+  m_capture.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+  m_capture.set(cv::CAP_PROP_EXPOSURE, m_exposure.count());
+  m_capture.set(cv::CAP_PROP_AUTO_EXPOSURE, 0);
+
   // cap.set(cv::CAP_PROP_EXPOSURE, height);
   sleep(50);
-  cap.set(cv::CAP_PROP_FPS, framerate);
+  m_capture.set(cv::CAP_PROP_FPS, m_max_framerate);
   sleep(50);
-  log("Size: " + std::to_string((int)cap.get(cv::CAP_PROP_FRAME_WIDTH)) +
-      " x " + std::to_string((int)cap.get(cv::CAP_PROP_FRAME_HEIGHT)));
-  log("Exposure: " + std::to_string((int)cap.get(cv::CAP_PROP_EXPOSURE)));
-  if (!cap.isOpened()) {
-    running = false;
+  log("Size: " + std::to_string((int)m_capture.get(cv::CAP_PROP_FRAME_WIDTH)) +
+      " x " + std::to_string((int)m_capture.get(cv::CAP_PROP_FRAME_HEIGHT)));
+  log("Exposure: " + std::to_string((int)m_capture.get(cv::CAP_PROP_EXPOSURE)));
+  if (!m_capture.isOpened()) {
+    m_running = false;
     return;
     err("Could not connect to the camera.");
   }
   cv::Mat frame;
-  while (running) {
-    if (!cap.grab()) {
+  while (m_running) {
+    if (!m_capture.grab()) {
       continue;
     }
     // cv::Mat _img;
-    cap.retrieve(frame);
-    m_received_frames++;
-    queue.push(std::move(frame));
+    m_capture.retrieve(frame);
+    m_queue.push(std::move(frame));
     // sleep(15);
   }
 }

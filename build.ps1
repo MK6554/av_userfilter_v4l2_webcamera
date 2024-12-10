@@ -36,9 +36,14 @@ try {
     Write-Host -NoNewline 'Building with: '
     Write-Host ($params -join ' ')
     cmake .. && cmake @params
-    if ($Run.IsPresent -and ($all.ispresent || $target -contains 'UfWebCameraV4L_TEST')) {
-       & ./UfWebCameraV4L
+    if($LASTEXITCODE -ne 0){
+        exit 1
     }
+    if ($Run.IsPresent -and ($all.ispresent || $target -contains 'UfWebCameraV4L_TEST')) {
+        & ./UfWebCameraV4L --loop
+    }
+} catch {
+    exit 1
 } finally {
     Pop-Location
 }

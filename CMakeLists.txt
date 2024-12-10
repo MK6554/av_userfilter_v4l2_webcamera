@@ -57,6 +57,14 @@ link_directories(${AVEXECUTOR_DIR_LIB_DIR})
 add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
 
+# add_custom_command(
+#     TARGET ${UF_NAME}
+#     POST_BUILD
+#     COMMAND include-what-you-use $<TARGET_OBJECTS:${UF_NAME}> -- -I ${CMAKE_SOURCE_DIR} ${CMAKE_CXX_FLAGS}
+#     COMMENT "Running IWYU"
+#     VERBATIM
+# )
+
 # Link the necessary libraries
 target_link_libraries(${UF_NAME} PUBLIC
     AVL_Lite # Assuming this is available in the specified library directory

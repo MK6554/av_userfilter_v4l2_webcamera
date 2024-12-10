@@ -1,6 +1,5 @@
 #ifndef UF_WEBCAM_MANAG
 #define UF_WEBCAM_MANAG
-#include <unordered_map>
 #include "webcamera.hpp"
 class WebCameraManager{
 

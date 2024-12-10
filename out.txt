@@ -1,0 +1,3 @@
+[ 50%] Built target UfWebCameraV4L
+Consolidate compiler generated dependencies of target UfWebCameraV4L_TEST
+[ 58%] Building CXX object CMakeFiles/UfWebCameraV4L_TEST.dir/sources/test.cpp.o

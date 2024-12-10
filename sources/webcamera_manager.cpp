@@ -1,4 +1,5 @@
 #include "webcamera_manager.hpp"
+#include <AVL_Lite.h>
 
 WebCameraManager::WebCameraManager() {}
 WebCameraManager::~WebCameraManager() {}
@@ -6,7 +7,7 @@ WebCameraManager::~WebCameraManager() {}
 void WebCameraManager::add_device(std::shared_ptr<WebCamera> camera)
 {
     if(get_device(camera->camera_index())){
-        throw -12;
+        throw atl::IoError("Attempted to reuse a device that does not exist.");
     }
     devices[camera->camera_index()]=std::move(camera);
 }
