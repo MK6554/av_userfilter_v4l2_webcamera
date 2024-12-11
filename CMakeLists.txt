@@ -22,16 +22,17 @@ set(SRC_CORE
 
 # Specify the source directory
 if(WIN32)
-    set(AVEXECUTOR_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
-    set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib\\x64\\")
-    set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include\\")
+    set(AVL_LITE_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
+    set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib\\x64\\")
+    set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include\\")
+    set(USER_PROPS_PATH "${AVL_LITE_DIR}props\\UserFilters_v143.props")
     set(SRC_PLATFORM
     )
 elseif(UNIX)
     find_package(OpenCV REQUIRED)
-    set(AVEXECUTOR_DIR "/etc/avexecutor/")
-    set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
-    set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
+    set(AVL_LITE_DIR "/etc/avexecutor/")
+    set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib/x86_64-linux-gnu/")
+    set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include/")
     set(SRC_PLATFORM
         ./sources/paraqueue.cpp
         ./sources/webcamera.cpp
@@ -45,13 +46,13 @@ set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Specify the include directories for avexecutor
-include_directories(${AVEXECUTOR_DIR_LIB_INCLUDE})
+include_directories(${AVL_LITE_INCLUDE_DIR})
 
 # Include directories for headers
 include_directories(${HEAD_DIR})
 
 # Specify the library directories for avexecutor and other dependencies
-link_directories(${AVEXECUTOR_DIR_LIB_DIR})
+link_directories(${AVL_LITE_LIB_DIR})
 
 # Add the shared library target
 add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
@@ -77,6 +78,7 @@ set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 if(WIN32)
 # Windows-specific source files or definitions
+set_target_properties(${UF_NAME} PROPERTIES VS_USER_PROPS "${USER_PROPS_PATH}")
 target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_WINDOWS)
 target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_WINDOWS)
 elseif(UNIX)
