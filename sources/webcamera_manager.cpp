@@ -7,7 +7,7 @@ WebCameraManager::~WebCameraManager() {}
 void WebCameraManager::add_device(std::shared_ptr<WebCamera> camera)
 {
     if(get_device(camera->camera_index())){
-        throw atl::IoError("Attempted to reuse a device that does not exist.");
+        throw atl::IoError("Attempted to add an already existing device.");
     }
     devices[camera->camera_index()]=std::move(camera);
 }
