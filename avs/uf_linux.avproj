@@ -3,7 +3,8 @@
     <Program Path="uf_linux.avcode" />
     <View Path="uf_linux.avview" />
     <WebHMI Path="uf_linux.hxaml" />
-    <UserFilters Path64="../build/libUfWebCameraV4L.so" />
+    <UserFilters Path64="../build/lib/libUfWebCameraV4L.so" />
+    <!-- <UserFilters Path64="../build/Debug/bin/UfWebCameraV4L.so" /> -->
   </Files>
   <AutoPreview>con_2e7320fb_0e9d_40a0_9ff1_7f204f367dd5</AutoPreview>
 </AuroraVisionProject>

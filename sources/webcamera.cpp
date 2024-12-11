@@ -4,7 +4,6 @@
 #include <UserFilter.h>
 #include <UserFilterLog.h>
 #include <chrono>
-#include <debug_log.hpp>
 #include <fcntl.h>
 #include <fstream>
 #include <iostream>
@@ -38,7 +37,6 @@ void WebCamera::close_acquisition() {
   if (m_capture.isOpened()) {
     m_capture.release();
   }
-  log("Closed acquisition of camera " + std::to_string(m_camera_index));
 }
 
 double WebCamera::get_property(int property_id) const {
@@ -89,13 +87,9 @@ void WebCamera::captureLoop() {
   sleep(50);
   m_capture.set(cv::CAP_PROP_FPS, m_max_framerate);
   sleep(50);
-  log("Size: " + std::to_string((int)m_capture.get(cv::CAP_PROP_FRAME_WIDTH)) +
-      " x " + std::to_string((int)m_capture.get(cv::CAP_PROP_FRAME_HEIGHT)));
-  log("Exposure: " + std::to_string((int)m_capture.get(cv::CAP_PROP_EXPOSURE)));
   if (!m_capture.isOpened()) {
     m_running = false;
     return;
-    err("Could not connect to the camera.");
   }
   cv::Mat frame;
   while (m_running) {

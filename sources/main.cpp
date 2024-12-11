@@ -1,7 +1,7 @@
 #include "main.hpp"
 #include "debug_log.hpp"
-#include "WebCamera.hpp"
-#include "WebCamera_manager.hpp"
+#include "webcamera.hpp"
+#include "webcamera_manager.hpp"
 #include <AVL_Lite.h>
 #include <UserFilter.h>
 #include <UserFilterLibrary.hxx>
