@@ -1,4 +1,0 @@
-﻿#ifndef WINUSERFILTERMOCKUP_H
-#define WINUSERFILTERMOCKUP_H
-
-#endif

@@ -1,163 +1,338 @@
-extern public Real whmi_con_slider1_Value = 0.000000
+extern public Integer whmi_con_sliderFps_Value__7f1e603d = 0
+extern public Integer whmi_con_slider1_Value__90fbfb49 = 0
 
-//:SECTIONSVISIBILITY Disabled
 //:USETYPE WORKERTASK
 public Main()
 {
-	WebCamera_GrabImage
+	//:LABELDATASOURCE[outStartTime] StartTime
+	StartClock
 	(
-		inCameraIndex: 0
-		inWidth: 2592
-		inHeight: 1944
-		inFPS: 30
-		outImage: con_2e7320fb_0e9d_40a0_9ff1_7f204f367dd5
-		outFPS: con_86027c82_9a4f_405b_b810_56cd1f396427
+		outStartTime: con_62c74dac_8190_41f6_ba6f_551fa9bc0fae
 	)
 
-	//:HIDDENPORT[inIntegerDigitCount] TRUE
-	//:HIDDENPORT[inFractionalDigitCount] TRUE
-	//:HIDDENPORT[inDecimalMark] TRUE
-	//:HIDDENPORT[inTrailingCharacter] TRUE
-	//:HIDDENPORT[inForceSignPrinting] TRUE
-	//:HIDDENPORT[inSuffix] TRUE
-	FormatRealToString
+	UfWebCamera_GrabImage_Synchronous
 	(
-		inReal: con_86027c82_9a4f_405b_b810_56cd1f396427
-		inIntegerDigitCount: 0
-		inFractionalDigitCount: 0
-		inDecimalMark: "."
-		inTrailingCharacter: "0"
-		inForceSignPrinting: False
-		inSuffix: ""
-		outString: con_693ca9f7_fcb4_4e1e_bbde_019050a2a70b
+		inCameraIndex: Nil
+		inWidth: Nil
+		inHeight: Nil
+		inFPS: Nil
+		inExposure: 30
+		outImage: con_bdeee4a7_fc48_4a49_aa66_ead20671598c
+		outFPS: con_10ab6779_8ce5_46f4_87d3_ffa0e50db367
 	)
 
-	//:HIDDENPORT[inString4] TRUE
-	//:HIDDENPORT[inString5] TRUE
-	//:HIDDENPORT[inString6] TRUE
-	//:HIDDENPORT[inString7] TRUE
-	//:HIDDENPORT[inString8] TRUE
-	ConcatenateStrings
+	//:USELABEL[inStartTime]
+	GetClockTime
 	(
-		inString1: con_693ca9f7_fcb4_4e1e_bbde_019050a2a70b
-		inString2: " FPS"
-		inString3: ""
-		inString4: ""
-		inString5: ""
-		inString6: ""
-		inString7: ""
-		inString8: ""
-		outString: con_874c89b0_41ed_41d9_bfdb_67b7ca0edda2
+		inStartTime: con_62c74dac_8190_41f6_ba6f_551fa9bc0fae
+		outElapsedTime: con_16367a2f_c573_4a6a_b749_5e6a4091ca91
 	)
 
-	CopyObject<Real>
+	HMI_FPS
 	(
-		inObject: whmi_con_slider1_Value
-		outObject: con_1504e7c2_5261_4852_9910_f9ea11c89a4b
+		inFPS: con_10ab6779_8ce5_46f4_87d3_ffa0e50db367
+		outFpsToSet: con_563a90c2_ff53_40b0_bb65_5b96aadaea65
 	)
 
-	//:HIDDENPORT[inIntegerDigitCount] TRUE
-	//:HIDDENPORT[inFractionalDigitCount] TRUE
-	//:HIDDENPORT[inDecimalMark] TRUE
-	//:HIDDENPORT[inTrailingCharacter] TRUE
-	//:HIDDENPORT[inForceSignPrinting] TRUE
-	//:HIDDENPORT[inSuffix] TRUE
-	FormatRealToString
+	HMI_EXPOSURE
 	(
-		inReal: con_1504e7c2_5261_4852_9910_f9ea11c89a4b
-		inIntegerDigitCount: 0
-		inFractionalDigitCount: 0
-		inDecimalMark: "."
-		inTrailingCharacter: "0"
-		inForceSignPrinting: False
-		inSuffix: ""
-		outString: con_ce02f626_9254_4f7a_96b7_214214d9adbb
+		outExposureToSet: con_6b9fb3f4_c442_42dd_91b7_71561ff199a8
 	)
 
-	//:HIDDENPORT[inString4] TRUE
-	//:HIDDENPORT[inString5] TRUE
-	//:HIDDENPORT[inString6] TRUE
-	//:HIDDENPORT[inString7] TRUE
-	//:HIDDENPORT[inString8] TRUE
-	ConcatenateStrings
+	UfWebCamera_SetExposure
 	(
-		inString1: con_ce02f626_9254_4f7a_96b7_214214d9adbb
-		inString2: " ms exposure"
-		inString3: ""
-		inString4: ""
-		inString5: ""
-		inString6: ""
-		inString7: ""
-		inString8: ""
-		outString: con_79fbdbf8_6060_4cbd_a577_a85f4228c6b0
+		inCameraIndex: Nil
+		inExposure: con_6b9fb3f4_c442_42dd_91b7_71561ff199a8
 	)
 
-	//:HIDDENPORT[inD] TRUE
-	//:HIDDENPORT[inE] TRUE
-	//:HIDDENPORT[inF] TRUE
-	//:HIDDENPORT[inG] TRUE
-	//:HIDDENPORT[inH] TRUE
-	MultiplyReals
+	UfWebCamera_SetFrameRateLimit
 	(
-		inA: con_1504e7c2_5261_4852_9910_f9ea11c89a4b
-		inB: 10.000000
-		inC: 1.000000
-		inD: 1.000000
-		inE: 1.000000
-		inF: 1.000000
-		inG: 1.000000
-		inH: 1.000000
-		outProduct: con_5f1290c2_4a7e_4c9f_b464_537b93e4232d
+		inCameraIndex: Nil
+		inFpsLimit: con_563a90c2_ff53_40b0_bb65_5b96aadaea65
 	)
 
-	//Exposure - 15
-	//time in ms * 10
-	WebCameraSetParameter
+	//:USELABEL[inStartTime]
+	GetClockTime
 	(
-		inCameraIndex: 0
-		inParameterId: 15
-		inParameterValue: con_5f1290c2_4a7e_4c9f_b464_537b93e4232d
-		outSuccess: Nil
+		inStartTime: con_62c74dac_8190_41f6_ba6f_551fa9bc0fae
+		outElapsedTime: con_7051b94b_afc9_4521_9e02_c823ea6a8ba7
 	)
 
-	//:HIDDENPORT[inStart] TRUE
-	//:HIDDENPORT[inCount] TRUE
-	//:HIDDENPORT[inDelay] TRUE
-	//:HIDDENPORT[inRepeat] TRUE
-	//:HIDDENPORT[outIsFirst] TRUE
-	//:HIDDENPORT[outIsLast] TRUE
-	EnumerateIntegers
+	HMI_STATS
 	(
-		inStart: 0
-		inCount: Nil
-		inStep: 1
-		inDelay: 0
-		inRepeat: False
-		outValue: Nil
-		outIsFirst: Nil
-		outIsLast: Nil
+		inGrabTime: con_16367a2f_c573_4a6a_b749_5e6a4091ca91
+		inIterationTime: con_7051b94b_afc9_4521_9e02_c823ea6a8ba7
+	)
+
+	Delay
+	(
+		inTime: 10
 	)
 }
 
-public WebCameraGrabImage2(Integer inCameraIndex, Integer inWidth, Integer inHeight, Integer inFPS, Integer inInputQueueSize, Image outImage, Real outFPS) step
+public HMI_FPS(Real inFPS, Integer outFpsToSet) step
 {
-	//:HIDDENPORT[inImageId] TRUE
-	TestImage
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatRealToString
 	(
-		inImageId: Baboon
-		outRgbImage: con_07513443_feb3_481b_84ff_8f5c017516a4
-		outMonoImage: Nil
+		inReal: inFPS
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 0
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: " FPS"
+		outString: con_5a7d27b9_e27a_44e4_bb6f_ce6e514f46d3
 	)
 
-	//:HIDDENPORT[inDelay] TRUE
-	Loop
+	//ACTUAL
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
 	(
-		inShouldLoop: True
-		inDelay: 0
+		inString1: "Actual: "
+		inString2: con_5a7d27b9_e27a_44e4_bb6f_ce6e514f46d3
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_bef8d068_695a_4066_aea2_3b8f9470ac94
 	)
 
-	outImage = con_07513443_feb3_481b_84ff_8f5c017516a4
+	CopyObject<Integer>
+	(
+		inObject: whmi_con_sliderFps_Value__7f1e603d
+		outObject: con_9d26bc43_80df_4b9c_ab3f_94e96ae6c91b
+	)
 
-	outFPS = 12.000000
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatRealToString
+	(
+		inReal: con_9d26bc43_80df_4b9c_ab3f_94e96ae6c91b
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 0
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: " FPS"
+		outString: con_4238b99b_c32d_4f88_98a5_87e0e6fff1df
+	)
+
+	//LIMIT
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: "Limit: "
+		inString2: con_4238b99b_c32d_4f88_98a5_87e0e6fff1df
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_d0671ac5_49f3_4668_94e7_45c938cfe39e
+	)
+
+	outFpsToSet = con_9d26bc43_80df_4b9c_ab3f_94e96ae6c91b
+}
+
+public HMI() step
+{
+}
+
+public HMI_EXPOSURE(Integer outExposureToSet) step
+{
+	CopyObject<Integer>
+	(
+		inObject: whmi_con_slider1_Value__90fbfb49
+		outObject: con_ea9e5923_6d3e_4413_b641_667b6d36fc43
+	)
+
+	//:HIDDENPORT[inDigitCount] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	//:HIDDENPORT[inSystemBase] TRUE
+	FormatIntegerToString
+	(
+		inInteger: con_ea9e5923_6d3e_4413_b641_667b6d36fc43
+		inDigitCount: 0
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: " ms"
+		inSystemBase: 10
+		outString: con_7981fe04_d6b3_4650_9ebc_b80328527e87
+	)
+
+	outExposureToSet = con_ea9e5923_6d3e_4413_b641_667b6d36fc43
+}
+
+public HMI_STATS(Double inGrabTime, Double inIterationTime) step
+{
+	GetMedian
+	(
+		inTime: inGrabTime
+		inMaxSize: 60
+		outMedian: con_dd35996a_7d61_46aa_88f4_981fd738c820
+	)
+
+	GetMedian
+	(
+		inTime: inIterationTime
+		inMaxSize: 60
+		outMedian: con_c653ac44_72f8_416d_8962_9770e37888bd
+	)
+
+	//:HIDDENPORT[inMaxSize] TRUE
+	//:HIDDENPORT[inReset] TRUE
+	AccumulateElements<Double>
+	(
+		inElement: Nil
+		inCondition: True
+		inMaxSize: Nil
+		inReset: False
+		outArray: Nil
+	)
+
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatDoubleToString
+	(
+		inDouble: con_dd35996a_7d61_46aa_88f4_981fd738c820
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 3
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: " ms"
+		outString: con_4b2ae027_d8a5_43a5_af0c_c0c9bb99efc2
+	)
+
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: "GrabImage: "
+		inString2: con_4b2ae027_d8a5_43a5_af0c_c0c9bb99efc2
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_da156158_e6b9_4663_a794_e94c946967e9
+	)
+
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatDoubleToString
+	(
+		inDouble: con_c653ac44_72f8_416d_8962_9770e37888bd
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 3
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: " ms"
+		outString: con_348b0bd3_bbf8_4486_af3f_9213edb376c2
+	)
+
+	//:HIDDENPORT[inString4] TRUE
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: "Iiteration: "
+		inString2: con_348b0bd3_bbf8_4486_af3f_9213edb376c2
+		inString3: ""
+		inString4: ""
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_939dd281_35bc_4ea5_a52a_ba30acdb8a7d
+	)
+
+	DivideDoubles
+	(
+		inA: 1000.000000D
+		inB: con_c653ac44_72f8_416d_8962_9770e37888bd
+		outQuotient: con_eb638fbe_22ef_4884_bc9f_8ef9498c1107
+	)
+
+	//:HIDDENPORT[inIntegerDigitCount] TRUE
+	//:HIDDENPORT[inFractionalDigitCount] TRUE
+	//:HIDDENPORT[inDecimalMark] TRUE
+	//:HIDDENPORT[inTrailingCharacter] TRUE
+	//:HIDDENPORT[inForceSignPrinting] TRUE
+	//:HIDDENPORT[inSuffix] TRUE
+	FormatDoubleToString
+	(
+		inDouble: con_eb638fbe_22ef_4884_bc9f_8ef9498c1107
+		inIntegerDigitCount: 0
+		inFractionalDigitCount: 1
+		inDecimalMark: "."
+		inTrailingCharacter: "0"
+		inForceSignPrinting: False
+		inSuffix: " iter/sec"
+		outString: con_fc371cba_736a_4594_b7ef_28cfaf5f0166
+	)
+}
+
+public GetMedian(Double inTime, Integer* inMaxSize = 60, Double outMedian) step
+{
+	//:HIDDENPORT[inReset] TRUE
+	AccumulateElements<Double>
+	(
+		inElement: inTime
+		inCondition: True
+		inMaxSize: inMaxSize
+		inReset: False
+		outArray: con_1d50c521_5512_416b_a9f9_d35ee43049fa
+	)
+
+	expression
+	{
+		DoubleArray inArray
+		Double outName = "if inArray.Count>0 then median(inArray) else 0"
+	}
+	(
+		inArray: con_1d50c521_5512_416b_a9f9_d35ee43049fa
+		outName: con_87b8b04b_7972_4e92_b5ca_464855e2d8a5
+	)
+
+	outMedian = con_87b8b04b_7972_4e92_b5ca_464855e2d8a5
 }
 

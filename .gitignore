@@ -50,6 +50,7 @@ bld/
 
 .vs/
 
+*.dllso
 
 /build/**
 /CMakeFiles/**

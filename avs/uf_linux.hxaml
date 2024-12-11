@@ -1,7 +1,7 @@
 <Window
     Name="window">
     <TablePanel
-        ColumnDefinitions="auto 200px"
+        ColumnDefinitions="auto 250px"
         Gap="10px"
         Margin="auto"
         Name="tablePanel1"
@@ -14,49 +14,19 @@
             CornerRadius="10px"
             ItemAlignment="Center"
             Justification="Center"
-            Name="border2"
+            Name="ImageBorder"
             Padding="10px"
             TablePanel.Row="1">
             <PictureBox
                 Height="600px"
                 Name="pictureBox1"
-                Source="{Binding @con_2e7320fb_0e9d_40a0_9ff1_7f204f367dd5}"
+                Source="{Binding @con_bdeee4a7_fc48_4a49_aa66_ead20671598c}"
                 Width="800px" />
-        </Border>
-        <Border
-            Background="White"
-            BorderBrush="#C0C0C0"
-            BorderStyle="Solid"
-            BorderThickness="5px"
-            CornerRadius="10px"
-            Name="border3"
-            TablePanel.Column="1"
-            TablePanel.Row="1">
-            <StackPanel
-                Height=""
-                Name="stackPanel1"
-                Padding="10px"
-                Spacing="5px">
-                <Slider
-                    InitialValue="30"
-                    Maximum="200"
-                    Minimum="5"
-                    Name="slider1"
-                    Step="5" />
-                <TextBlock
-                    InitialText="10 ms"
-                    Name="textBlock1"
-                    Text="{Binding @con_79fbdbf8_6060_4cbd_a577_a85f4228c6b0}" />
-                <TextBlock
-                    InitialText="30 FPS"
-                    Name="textBlock2"
-                    Text="{Binding @con_874c89b0_41ed_41d9_bfdb_67b7ca0edda2}" />
-            </StackPanel>
         </Border>
         <StackPanel
             Height=""
             ItemAlignment="Center"
-            Name="stackPanel2"
+            Name="stackPanel3"
             Orientation="Horizontal"
             Padding="10px"
             Spacing="15px"
@@ -76,6 +46,97 @@
                 Name="textBlock3"
                 Text="UserFilter Demo"
                 Typography="H4" />
+        </StackPanel>
+        <StackPanel
+            Name="stackPanel1"
+            TablePanel.Column="1"
+            TablePanel.Row="1">
+            <Border
+                Background="White"
+                BorderBrush="#C0C0C0"
+                BorderStyle="Solid"
+                BorderThickness="5px"
+                CornerRadius="10px"
+                Name="border3">
+                <StackPanel
+                    Height=""
+                    Name="stackPanel2"
+                    Padding="10px"
+                    Spacing="5px">
+                    <TextBlock
+                        FontWeight="Bold"
+                        Name="ExpoHeader"
+                        Text="Exposure" />
+                    <Slider
+                        InitialValue="30"
+                        Maximum="200"
+                        Minimum="5"
+                        Name="slider1"
+                        Step="5" />
+                    <TextBlock
+                        InitialText="60 ms"
+                        Name="ExpoValue"
+                        Text="{Binding @con_7981fe04_d6b3_4650_9ebc_b80328527e87}" />
+                </StackPanel>
+            </Border>
+            <Border
+                Background="White"
+                BorderBrush="#C0C0C0"
+                BorderStyle="Solid"
+                Name="border1">
+                <StackPanel
+                    Height=""
+                    Name="stackPanelFps"
+                    Padding="10px"
+                    Spacing="5px">
+                    <TextBlock
+                        FontWeight="Bold"
+                        Name="ExpoFps"
+                        Text="FPS" />
+                    <Slider
+                        InitialValue="30"
+                        Maximum="200"
+                        Minimum="5"
+                        Name="sliderFps"
+                        Step="5" />
+                    <TextBlock
+                        InitialText="Limit: xx FPS"
+                        Name="FpsValueLim"
+                        Text="{Binding @con_d0671ac5_49f3_4668_94e7_45c938cfe39e}" />
+                    <TextBlock
+                        InitialText="Actual: xx FPS"
+                        Name="FpsValueAct"
+                        Text="{Binding @con_bef8d068_695a_4066_aea2_3b8f9470ac94}" />
+                </StackPanel>
+            </Border>
+            <Border
+                Background="White"
+                BorderBrush="#C0C0C0"
+                BorderStyle="Solid"
+                Name="border2">
+                <StackPanel
+                    Height=""
+                    Name="stackPanelStats"
+                    Padding="10px"
+                    Spacing="5px">
+                    <TextBlock
+                        FontWeight="Bold"
+                        Name="StatsHeader"
+                        Text="Statistics" />
+                    <TextBlock
+                        InitialText="GrabImage: xx ms"
+                        Name="StatsGrab"
+                        Text="{Binding @con_da156158_e6b9_4663_a794_e94c946967e9}" />
+                    <TextBlock
+                        InitialText="Iteration: xx ms"
+                        Name="StatsITer"
+                        Text="{Binding @con_939dd281_35bc_4ea5_a52a_ba30acdb8a7d}" />
+                    <TextBlock
+                        InitialText="Iteration/sec: xx"
+                        Name="StatsIterPerSec"
+                        Text="{Binding @con_fc371cba_736a_4594_b7ef_28cfaf5f0166}" />
+                </StackPanel>
+            </Border>
         </StackPanel>
     </TablePanel>
 </Window>
