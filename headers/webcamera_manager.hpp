@@ -1,6 +1,7 @@
 #ifndef UF_WEBCAM_MANAG
 #define UF_WEBCAM_MANAG
 #include "webcamera.hpp"
+#include <memory>
 class WebCameraManager{
 
 	std::unordered_map<int,std::shared_ptr<WebCamera>> devices;

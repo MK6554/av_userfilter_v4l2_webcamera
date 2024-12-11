@@ -101,7 +101,6 @@ void WebCameraGrabImage::Define() {
 
 int WebCameraGrabImage::Invoke() {
   while (!m_camera->can_grab()) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
     if (IsWorkCancelled()) {
       outImage.Reset();
       WriteOutput(L"outImage", outImage);

@@ -8,7 +8,6 @@ set(PROJECT_VERSION 1.0)
 # Set the C++ standard for the project (you can change this if needed)
 set(CMAKE_CXX_STANDARD 17)
 
-
 # Specify the version (optional)
 set(UF_NAME ${CMAKE_PROJECT_NAME})
 set(EXE_NAME "${CMAKE_PROJECT_NAME}_TEST")
@@ -18,31 +17,27 @@ set(SRC_DIR "./sources")
 
 set(SRC_CORE
     ./sources/debug_log.cpp
-    ./sources/paraqueue.cpp
     ./sources/webcamera_manager.cpp
-    ./sources/webcamera.cpp
 )
 
 # Specify the source directory
-# if(WIN32)
-# set(AVEXECUTOR_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
-# set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib\\x64\\")
-# set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include\\")
-# set(SRC_PLATFORM
-# ./sources/opencv.cpp
-# )
-# elseif(UNIX)
-find_package(OpenCV REQUIRED)
+if(WIN32)
+    set(AVEXECUTOR_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
+    set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib\\x64\\")
+    set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include\\")
+    set(SRC_PLATFORM
+    )
+elseif(UNIX)
+    find_package(OpenCV REQUIRED)
+    set(AVEXECUTOR_DIR "/etc/avexecutor/")
+    set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
+    set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
+    set(SRC_PLATFORM
+        ./sources/paraqueue.cpp
+        ./sources/webcamera.cpp
+    )
+endif()
 
-find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
-
-
-set(AVEXECUTOR_DIR "/etc/avexecutor/")
-set(AVEXECUTOR_DIR_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
-set(AVEXECUTOR_DIR_LIB_INCLUDE "${AVEXECUTOR_DIR}include/")
-set(SRC_PLATFORM)
-
-# endif()
 set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
 
 # Collect all .cpp files in the src directory
@@ -63,7 +58,6 @@ add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
 
 # set_property(TARGET ${UF_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-
 
 # Link the necessary libraries
 target_link_libraries(${UF_NAME} PUBLIC

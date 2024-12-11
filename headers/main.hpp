@@ -4,6 +4,8 @@
 #include <UserFilter.h>
 // #include <UserFilterLibrary.hxx>
 #include "webcamera.hpp"
+#include <memory>
+
 namespace avs {
 
 class WebCameraBase : public UserFilter {
