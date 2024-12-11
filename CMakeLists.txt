@@ -75,18 +75,18 @@ target_link_libraries(${EXE_NAME} ${UF_NAME}
 set_target_properties(${UF_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
-# if(WIN32)
-# # Windows-specific source files or definitions
-# target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_WINDOWS)
-# target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_WINDOWS)
-# elseif(UNIX)
+if(WIN32)
+# Windows-specific source files or definitions
+target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_WINDOWS)
+target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_WINDOWS)
+elseif(UNIX)
 # Unix-like (Linux, macOS) specific source files or definitions
 target_compile_definitions(${UF_NAME} PRIVATE PLATFORM_UNIX)
 target_compile_definitions(${EXE_NAME} PRIVATE PLATFORM_UNIX)
 target_link_libraries(${UF_NAME} PUBLIC ${OpenCV_LIBS})
 target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
 
-# endif()
+endif()
 
 # Additional flags for compiling and linking (this is added automatically by CMake when using SHARED)
 set_target_properties(${UF_NAME} PROPERTIES

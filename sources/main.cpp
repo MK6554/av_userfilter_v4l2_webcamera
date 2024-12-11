@@ -206,7 +206,6 @@ void WebCameraGetParameter::Define() {
 int WebCameraGetParameter::Invoke() {
   read_inputs();
   int id;
-  double val;
   ReadInput(L"inParameterId", id);
   auto cam = WebCameraManager::instance()->get_device(m_camera_index);
   if (!cam) {
@@ -238,8 +237,6 @@ void WebCameraGetFrameRateLimit::Define() {
 }
 int WebCameraGetFrameRateLimit::Invoke() {
   read_inputs();
-  int id;
-  double val;
   auto cam = WebCameraManager::instance()->get_device(m_camera_index);
   if (!cam) {
     THROW_NOT_CONNECTED;
@@ -260,7 +257,6 @@ void WebCameraGetExposure::Define() {
 }
 int WebCameraGetExposure::Invoke() {
   read_inputs();
-  double val;
   auto cam = WebCameraManager::instance()->get_device(m_camera_index);
   if (!cam) {
     THROW_NOT_CONNECTED;

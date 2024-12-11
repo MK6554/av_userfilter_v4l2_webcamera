@@ -26,7 +26,7 @@ public:
     counter= 0 ;
   }
   ~WebCamera(){}
-  bool set_property(int property_id, double value);
+  bool set_property(int property_id, double value){return true;}
   double get_property(int property_id) const{return 37.21;}
 
   int camera_index() const { return 0; }
