@@ -33,7 +33,7 @@
             "type": "cppdbg",
             "request": "attach",
             "processId": "${command:pickProcess}", // Allows you to pick the process you want to attach to
-            "program": "${workspaceFolder}/build/libUfWebCameraV4L.so", // Optional: Used for symbol resolution
+            "program": "${workspaceFolder}/build/Debug/lib/libUfWebCameraV4L.so", // Optional: Used for symbol resolution
             "MIMode": "gdb",
             "setupCommands": [
                 {

@@ -68,7 +68,7 @@
                         Name="ExpoHeader"
                         Text="Exposure" />
                     <Slider
-                        InitialValue="30"
+                        InitialValue="60"
                         Maximum="200"
                         Minimum="5"
                         Name="slider1"
@@ -94,7 +94,7 @@
                         Name="ExpoFps"
                         Text="FPS" />
                     <Slider
-                        InitialValue="30"
+                        InitialValue="60"
                         Maximum="200"
                         Minimum="5"
                         Name="sliderFps"

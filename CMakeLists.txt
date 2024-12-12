@@ -6,7 +6,7 @@ project(UfWebCameraV4L)
 set(PROJECT_VERSION 1.0)
 
 # Set the C++ standard for the project (you can change this if needed)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Specify the version (optional)
 set(UF_NAME ${CMAKE_PROJECT_NAME})
@@ -40,9 +40,9 @@ elseif(UNIX)
 endif()
 
 set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # Collect all .cpp files in the src directory
 # file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.cpp")

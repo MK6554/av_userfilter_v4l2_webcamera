@@ -66,7 +66,7 @@ public Main()
 
 	Delay
 	(
-		inTime: 10
+		inTime: 0
 	)
 }
 
@@ -274,7 +274,7 @@ public HMI_STATS(Double inGrabTime, Double inIterationTime) step
 	//:HIDDENPORT[inString8] TRUE
 	ConcatenateStrings
 	(
-		inString1: "Iiteration: "
+		inString1: "Iteration: "
 		inString2: con_348b0bd3_bbf8_4486_af3f_9213edb376c2
 		inString3: ""
 		inString4: ""

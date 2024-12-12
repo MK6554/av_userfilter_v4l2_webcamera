@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "C:/Work/Github/MK6554/TestUserFilter",
+    "cmake.sourceDirectory": "/home/maciejk/Repos/TestUserFilter",
     "files.associations": {
         "queue": "cpp",
         "atomic": "cpp",
