@@ -1,5 +1,7 @@
 extern public Integer whmi_con_sliderFps_Value__7f1e603d = 0
 extern public Integer whmi_con_slider1_Value__90fbfb49 = 0
+extern public Bool whmi_con_checkBox_FPS_IsChecked = False
+extern public Bool whmi_con_checkBox_Expo_IsChecked = False
 
 //:USETYPE WORKERTASK
 public Main()
@@ -39,16 +41,38 @@ public Main()
 		outExposureToSet: con_6b9fb3f4_c442_42dd_91b7_71561ff199a8
 	)
 
-	UfWebCamera_SetExposure
+	//:HIDDENPORT[inInitialResult] TRUE
+	//:HIDDENPORT[inReset] TRUE
+	TestObjectChanged<Integer*>
 	(
-		inCameraIndex: Nil
-		inExposure: con_6b9fb3f4_c442_42dd_91b7_71561ff199a8
+		inObject: con_6b9fb3f4_c442_42dd_91b7_71561ff199a8
+		inInitialResult: False
+		inReset: False
+		outObjectChanged: con_579025ec_ba53_47ea_8124_ff577f37c1ce
+		outPreviousObject: Nil
 	)
 
-	UfWebCamera_SetFrameRateLimit
+	SetExposure
 	(
-		inCameraIndex: Nil
-		inFpsLimit: con_563a90c2_ff53_40b0_bb65_5b96aadaea65
+		inChanged: con_579025ec_ba53_47ea_8124_ff577f37c1ce
+		inExposureToSet: con_6b9fb3f4_c442_42dd_91b7_71561ff199a8
+	)
+
+	//:HIDDENPORT[inInitialResult] TRUE
+	//:HIDDENPORT[inReset] TRUE
+	TestObjectChanged<Integer*>
+	(
+		inObject: con_563a90c2_ff53_40b0_bb65_5b96aadaea65
+		inInitialResult: False
+		inReset: False
+		outObjectChanged: con_75b67870_7c9a_4b50_bd78_095b864cc668
+		outPreviousObject: Nil
+	)
+
+	SetFps
+	(
+		inChanged: con_75b67870_7c9a_4b50_bd78_095b864cc668
+		inFpsToSet: con_563a90c2_ff53_40b0_bb65_5b96aadaea65
 	)
 
 	//:USELABEL[inStartTime]
@@ -62,6 +86,7 @@ public Main()
 	(
 		inGrabTime: con_16367a2f_c573_4a6a_b749_5e6a4091ca91
 		inIterationTime: con_7051b94b_afc9_4521_9e02_c823ea6a8ba7
+		inImage: con_bdeee4a7_fc48_4a49_aa66_ead20671598c
 	)
 
 	Delay
@@ -70,8 +95,14 @@ public Main()
 	)
 }
 
-public HMI_FPS(Real inFPS, Integer outFpsToSet) step
+public HMI_FPS(Real inFPS, Integer* outFpsToSet) step
 {
+	CopyObject<Bool>
+	(
+		inObject: whmi_con_checkBox_FPS_IsChecked
+		outObject: con_6bab60c8_9a9e_441b_93ed_befc24974805
+	)
+
 	//:HIDDENPORT[inIntegerDigitCount] TRUE
 	//:HIDDENPORT[inFractionalDigitCount] TRUE
 	//:HIDDENPORT[inDecimalMark] TRUE
@@ -112,7 +143,14 @@ public HMI_FPS(Real inFPS, Integer outFpsToSet) step
 	CopyObject<Integer>
 	(
 		inObject: whmi_con_sliderFps_Value__7f1e603d
-		outObject: con_9d26bc43_80df_4b9c_ab3f_94e96ae6c91b
+		outObject: con_d4d8058c_0aea_4734_9a55_3c5c3969a050
+	)
+
+	MakeConditional<Real>
+	(
+		inObject: con_d4d8058c_0aea_4734_9a55_3c5c3969a050
+		inCondition: con_6bab60c8_9a9e_441b_93ed_befc24974805
+		outConditionalObject: con_0ea6b36f_993e_4dc1_b011_d300433e04c5
 	)
 
 	//:HIDDENPORT[inIntegerDigitCount] TRUE
@@ -123,7 +161,7 @@ public HMI_FPS(Real inFPS, Integer outFpsToSet) step
 	//:HIDDENPORT[inSuffix] TRUE
 	FormatRealToString
 	(
-		inReal: con_9d26bc43_80df_4b9c_ab3f_94e96ae6c91b
+		inReal: con_0ea6b36f_993e_4dc1_b011_d300433e04c5
 		inIntegerDigitCount: 0
 		inFractionalDigitCount: 0
 		inDecimalMark: "."
@@ -152,19 +190,45 @@ public HMI_FPS(Real inFPS, Integer outFpsToSet) step
 		outString: con_d0671ac5_49f3_4668_94e7_45c938cfe39e
 	)
 
-	outFpsToSet = con_9d26bc43_80df_4b9c_ab3f_94e96ae6c91b
+	MergeDefault<String>
+	(
+		inConditionalObject: con_d0671ac5_49f3_4668_94e7_45c938cfe39e
+		inDefaultObject: "No framerate limit"
+		outObject: con_17b53312_2794_4e9c_9f02_17fdc1d4ebd6
+	)
+
+	ConditionalToOptional<Real>
+	(
+		inConditionalObject: con_0ea6b36f_993e_4dc1_b011_d300433e04c5
+		outOptionalValue: con_080953a2_38c8_4ad5_975a_721935d6575b
+	)
+
+	outFpsToSet = con_080953a2_38c8_4ad5_975a_721935d6575b
 }
 
 public HMI() step
 {
 }
 
-public HMI_EXPOSURE(Integer outExposureToSet) step
+public HMI_EXPOSURE(Integer* outExposureToSet) step
 {
+	CopyObject<Bool>
+	(
+		inObject: whmi_con_checkBox_Expo_IsChecked
+		outObject: con_d833905b_1ce8_45f8_963b_201c5af28b0b
+	)
+
 	CopyObject<Integer>
 	(
 		inObject: whmi_con_slider1_Value__90fbfb49
-		outObject: con_ea9e5923_6d3e_4413_b641_667b6d36fc43
+		outObject: con_1dbd9010_b662_455a_bd35_7e68d3aea61b
+	)
+
+	MakeConditional<Integer>
+	(
+		inObject: con_1dbd9010_b662_455a_bd35_7e68d3aea61b
+		inCondition: con_d833905b_1ce8_45f8_963b_201c5af28b0b
+		outConditionalObject: con_057b8f7e_154e_4edd_91c0_696dd65795d2
 	)
 
 	//:HIDDENPORT[inDigitCount] TRUE
@@ -174,7 +238,7 @@ public HMI_EXPOSURE(Integer outExposureToSet) step
 	//:HIDDENPORT[inSystemBase] TRUE
 	FormatIntegerToString
 	(
-		inInteger: con_ea9e5923_6d3e_4413_b641_667b6d36fc43
+		inInteger: con_057b8f7e_154e_4edd_91c0_696dd65795d2
 		inDigitCount: 0
 		inTrailingCharacter: "0"
 		inForceSignPrinting: False
@@ -183,10 +247,25 @@ public HMI_EXPOSURE(Integer outExposureToSet) step
 		outString: con_7981fe04_d6b3_4650_9ebc_b80328527e87
 	)
 
-	outExposureToSet = con_ea9e5923_6d3e_4413_b641_667b6d36fc43
+	MergeDefault<String>
+	(
+		inConditionalObject: con_7981fe04_d6b3_4650_9ebc_b80328527e87
+		inDefaultObject: "Auto-exposure"
+		outObject: con_b646053c_6d0d_4257_ac2e_65c02d26c649
+	)
+
+	ConditionalToOptional<Integer>
+	(
+		inConditionalObject: con_057b8f7e_154e_4edd_91c0_696dd65795d2
+		outOptionalValue: con_dd8f1ea0_ba35_4010_a1b3_665a147176f6
+	)
+
+	outExposureToSet = con_dd8f1ea0_ba35_4010_a1b3_665a147176f6
 }
 
-public HMI_STATS(Double inGrabTime, Double inIterationTime) step
+public HMI_STATS(Double inGrabTime, Double inIterationTime, Image inImage) step
+	expand inImage.Width
+	expand inImage.Height
 {
 	GetMedian
 	(
@@ -309,6 +388,23 @@ public HMI_STATS(Double inGrabTime, Double inIterationTime) step
 		inSuffix: " iter/sec"
 		outString: con_fc371cba_736a_4594_b7ef_28cfaf5f0166
 	)
+
+	//:HIDDENPORT[inString5] TRUE
+	//:HIDDENPORT[inString6] TRUE
+	//:HIDDENPORT[inString7] TRUE
+	//:HIDDENPORT[inString8] TRUE
+	ConcatenateStrings
+	(
+		inString1: "Image: "
+		inString2: inImage.Width
+		inString3: "x"
+		inString4: inImage.Height
+		inString5: ""
+		inString6: ""
+		inString7: ""
+		inString8: ""
+		outString: con_b67052c7_26a9_480c_9487_6d9c10c980c1
+	)
 }
 
 public GetMedian(Double inTime, Integer* inMaxSize = 60, Double outMedian) step
@@ -334,5 +430,29 @@ public GetMedian(Double inTime, Integer* inMaxSize = 60, Double outMedian) step
 	)
 
 	outMedian = con_87b8b04b_7972_4e92_b5ca_464855e2d8a5
+}
+
+public SetExposure(Bool inChanged, Integer* inExposureToSet) step(inChanged)
+{
+False:
+
+True:
+	UfWebCamera_SetExposure
+	(
+		inCameraIndex: Nil
+		inExposure: inExposureToSet
+	)
+}
+
+public SetFps(Bool inChanged, Integer* inFpsToSet) step(inChanged)
+{
+False:
+
+True:
+	UfWebCamera_SetFrameRateLimit
+	(
+		inCameraIndex: Nil
+		inFpsLimit: inFpsToSet
+	)
 }
 

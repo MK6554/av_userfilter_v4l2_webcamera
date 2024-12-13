@@ -67,16 +67,23 @@
                         FontWeight="Bold"
                         Name="ExpoHeader"
                         Text="Exposure" />
-                    <Slider
-                        InitialValue="60"
-                        Maximum="200"
-                        Minimum="5"
-                        Name="slider1"
-                        Step="5" />
+                    <TablePanel
+                        ColumnDefinitions="20px auto"
+                        Name="TableExpoSlider">
+                        <CheckBox
+                            Name="checkBox_Expo" />
+                        <Slider
+                            InitialValue="60"
+                            IsVisible="{Binding @con_d833905b_1ce8_45f8_963b_201c5af28b0b}"
+                            Maximum="200"
+                            Minimum="5"
+                            Name="slider1"
+                            Step="5" />
+                    </TablePanel>
                     <TextBlock
                         InitialText="60 ms"
                         Name="ExpoValue"
-                        Text="{Binding @con_7981fe04_d6b3_4650_9ebc_b80328527e87}" />
+                        Text="{Binding @con_b646053c_6d0d_4257_ac2e_65c02d26c649}" />
                 </StackPanel>
             </Border>
             <Border
@@ -93,16 +100,23 @@
                         FontWeight="Bold"
                         Name="ExpoFps"
                         Text="FPS" />
-                    <Slider
-                        InitialValue="60"
-                        Maximum="200"
-                        Minimum="5"
-                        Name="sliderFps"
-                        Step="5" />
+                    <TablePanel
+                        ColumnDefinitions="20px auto"
+                        Name="TableFpsSlider">
+                        <CheckBox
+                            Name="checkBox_FPS" />
+                        <Slider
+                            InitialValue="60"
+                            IsVisible="{Binding @con_6bab60c8_9a9e_441b_93ed_befc24974805}"
+                            Maximum="200"
+                            Minimum="5"
+                            Name="sliderFps"
+                            Step="5" />
+                    </TablePanel>
                     <TextBlock
                         InitialText="Limit: xx FPS"
                         Name="FpsValueLim"
-                        Text="{Binding @con_d0671ac5_49f3_4668_94e7_45c938cfe39e}" />
+                        Text="{Binding @con_17b53312_2794_4e9c_9f02_17fdc1d4ebd6}" />
                     <TextBlock
                         InitialText="Actual: xx FPS"
                         Name="FpsValueAct"
@@ -135,6 +149,10 @@
                         InitialText="Iteration/sec: xx"
                         Name="StatsIterPerSec"
                         Text="{Binding @con_fc371cba_736a_4594_b7ef_28cfaf5f0166}" />
+                    <TextBlock
+                        InitialText="image: 0x0"
+                        Name="textBlock1"
+                        Text="{Binding @con_b67052c7_26a9_480c_9487_6d9c10c980c1}" />
                 </StackPanel>
             </Border>
         </StackPanel>

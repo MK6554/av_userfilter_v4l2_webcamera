@@ -2,9 +2,13 @@
   <ViewSet Name="Custom1">
     <HSplit>
       <Views Width="0.998" Height="0.998">
-        <WebHmiView />
-        <View />
+        <View Type="TextView">
+          <Output Name="con_6bab60c8_9a9e_441b_93ed_befc24974805" Macro="HMI_FPS" Start="Main" Instance="0" />
+        </View>
       </Views>
     </HSplit>
+    <Window Top="-18" Left="2551" Width="2578" Height="1398" RelativeDPI="1.25">
+      <WebHmiView />
+    </Window>
   </ViewSet>
 </ViewSets>
