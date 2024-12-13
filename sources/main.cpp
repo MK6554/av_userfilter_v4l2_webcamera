@@ -242,20 +242,20 @@ namespace avs
 		SetName(L"UfWebCamera_SetExposure");
 		SetTip(L"Set new exposure to camera (if not on auto exposure).");
 		add_camera_params();
-		AddInput(L"inExposure", L"Integer<10, INF>", L"30", L"Desired exposure time in milliseconds.");
+		AddInput(L"inExposure", L"Integer<10, INF>*", L"30", L"Desired exposure time in milliseconds. Auto enables auto-exposure.");
 		AddAttribute(L"FilterGroup", L"UfWebCamera_SetParameter<Exposure> default ## Modify web camera's parameters.");
 	}
 	int WebCameraSetExposure::Invoke()
 	{
 		read_inputs();
-		int val;
+		atl::Optional<int> val;
 		ReadInput(L"inExposure", val);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
 		{
 			THROW_NOT_CONNECTED;
 		}
-		cam->set_exposure(val);
+		cam->set_exposure(val.GetValueOr(-1));
 		return INVOKE_NORMAL;
 	}
 	/*
