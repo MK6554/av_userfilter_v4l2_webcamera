@@ -8,14 +8,14 @@
 #include <fstream>
 #include <iostream>
 #include <linux/videodev2.h>
-#include <opencv2/opencv.hpp>
+
 #include <string>
 #include <sys/ioctl.h>
 #include <thread>
 #include <unistd.h>
 #define MAX_DIM 65535
 
-const int MJPEG = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
+const int MJPEG = v4l2_fourcc('M', 'J', 'P', 'G');
 
 void sleep(int time_ms) {
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
@@ -44,17 +44,14 @@ void WebCamera::close_acquisition() {
   if (m_cap_thread.joinable()) {
     m_cap_thread.join();
   }
-  if (m_capture.isOpened()) {
-    m_capture.release();
-  }
-}
+  this->video_capture->stop(); // looks cool does nothing 
 
-double WebCamera::get_property(int property_id) const {
-  return m_capture.get(property_id);
-}
+  delete this->video_capture; // releasing camera in destructor
+  delete this->buffer; //releasing image buffer
 
-bool WebCamera::set_property(int property_id, double value) {
-  return m_capture.set(property_id, value);
+  //if (m_capture.isOpened()) {
+  //  m_capture.release();
+  //}
 }
 
 bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
@@ -62,7 +59,9 @@ bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
 void WebCamera::set_max_framerate(int new_max) {
   m_max_framerate = new_max;
   m_queue.set_max_frequency_hz(new_max);
-  set_property(cv::CAP_PROP_FPS, new_max);
+  //set_property(cv::CAP_PROP_FPS, new_max);
+  //if(video_capture)
+    video_capture->setFps(new_max);
 }
 
 void WebCamera::set_exposure(long time_ms) {
@@ -72,8 +71,8 @@ void WebCamera::set_exposure(long time_ms) {
 void WebCamera::set_exposure(std::chrono::milliseconds millis) {
   m_exposure = millis;
   auto auto_exp = millis.count() < 0 ? 3 : 1;
-  set_property(cv::CAP_PROP_EXPOSURE, m_exposure.count());
-  set_property(cv::CAP_PROP_AUTO_EXPOSURE, auto_exp);
+  //set_property(cv::CAP_PROP_EXPOSURE, m_exposure.count());
+  //set_property(cv::CAP_PROP_AUTO_EXPOSURE, auto_exp);
 }
 
 WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
@@ -86,32 +85,48 @@ WebCamera::~WebCamera() { close_acquisition(); }
 void WebCamera::captureLoop() {
   // sudo apt install uvcdynctrl
   // uvcdynctrl -c -v
-  m_capture.open(m_camera_index, cv::CAP_V4L);
-  m_capture.set(cv::CAP_PROP_FOURCC, MJPEG);
   auto width = m_width < 0 ? MAX_DIM : m_width;
   auto height = m_height < 0 ? MAX_DIM : m_height;
-  m_capture.set(cv::CAP_PROP_FRAME_WIDTH, width);
-  m_capture.set(cv::CAP_PROP_FRAME_HEIGHT, height);
-  m_capture.set(cv::CAP_PROP_EXPOSURE, m_exposure.count());
-  m_capture.set(cv::CAP_PROP_AUTO_EXPOSURE,
-                1); // 1 means manual mode (at least for some cameras)
 
-  // cap.set(cv::CAP_PROP_EXPOSURE, height);
-  sleep(50);
-  m_capture.set(cv::CAP_PROP_FPS, m_max_framerate);
-  if (!m_capture.isOpened()) {
-    m_running = false;
+  //m_capture.set(cv::CAP_PROP_EXPOSURE, m_exposure.count());
+  //m_capture.set(cv::CAP_PROP_AUTO_EXPOSURE,
+  //              1); // 1 means manual mode (at least for some cameras)
+
+  char in_devname[50];// = "/dev/video"
+  sprintf(in_devname, "/dev/video%d", m_camera_index);
+  //std::cout << width << std::endl;
+
+  V4L2DeviceParameters param(in_devname, MJPEG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP);
+  this->video_capture = V4l2Capture::create(param);
+
+  if(!this->video_capture) {
+    this->m_running = false;
     return;
   }
-  cv::Mat frame;
+
+  this->buffer = new char[this->video_capture->getBufferSize()];
+
+  tv.tv_sec  = 0;
+  tv.tv_usec = 17000; // <---- this must be calculated
+
   while (m_running) {
-    if (!m_capture.grab()) {
-      continue;
+
+    int readable = video_capture->isReadable(&tv);
+    if (readable == 1){
+      int rsize = video_capture->read(this->buffer, video_capture->getBufferSize());
+
+      if (rsize == -1)
+      {
+        this->m_running = false;
+        return;
+      }
+      avl::Image outImage;
+
+      avl::LoadImageFromArray(reinterpret_cast<atl::byte*> (this->buffer), rsize, false, outImage);
+      m_queue.push(outImage);
     }
-    // cv::Mat _img;
-    m_capture.retrieve(frame);
-    m_queue.push(frame);
-    wait(m_queue.last_frame_time(), m_max_framerate);
+    //outImage.MakeDataOwn(); // <---- Scary memory menagment boooooo
+    //wait(m_queue.last_frame_time(), m_max_framerate);
   }
 }
 

@@ -1,10 +1,7 @@
 #include "paraqueue.hpp"
 #include "debug_log.hpp"
-#include <AVLConverters/AVL_OpenCV.h>
-#include <chrono>
+
 #include <iostream>
-#include <mutex>
-#include <opencv2/opencv.hpp>
 
 #define TIME_QUEUE_LENGTH 30
 void ParaQueue::update_times()
@@ -39,7 +36,7 @@ UNIT get_elapsed(std::queue<TIMEPOINT> const &times)
   return diff;
 }
 
-void ParaQueue::push(const cv::Mat &image)
+void ParaQueue::push(const avl::Image &image)
 {
   auto elapsed = get_elapsed(m_time_queue);
   auto min_period = std::chrono::seconds(1) / m_max_allowed_frequency_hz;
@@ -64,13 +61,9 @@ bool ParaQueue::pop(avl::Image &image)
 {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_queue.empty())
-  {
     return false;
-  }
-  auto bgr = m_queue.front();
-  cv::Mat rgb;
-  cv::cvtColor(bgr, rgb, cv::COLOR_BGR2RGB);
-  avl::CVMatToAvlImage(rgb, image);
+  
+  image = m_queue.front();
   m_queue.pop();
   return true;
 }

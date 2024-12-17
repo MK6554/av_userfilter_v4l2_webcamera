@@ -1,10 +1,8 @@
 #include "main.hpp"
 #include "debug_log.hpp"
-#include "webcamera.hpp"
+
 #include "webcamera_manager.hpp"
-#include <AVL_Lite.h>
-#include <UserFilter.h>
-#include <UserFilterLibrary.hxx>
+
 #include <iostream>
 #include <thread>
 
@@ -12,7 +10,6 @@
 
 namespace avs
 {
-
 #define THROW_NOT_CONNECTED throw atl::IoError("Attempted to reuse a device that does not exist.")
 
 	void WebCameraBase::disconnect()
@@ -194,20 +191,23 @@ namespace avs
 		double val;
 		ReadInput(L"inParameterId", id);
 		ReadInput(L"inParameterValue", val);
+		
+		
 		switch (id)
 		{
-		case cv::CAP_PROP_EXPOSURE:
+		case 15:
 			throw atl::DomainError("To set exposure use the dedicated filter.");
-		case cv::CAP_PROP_FPS:
+		case 5:
 			throw atl::DomainError("To limit frame rate use the dedicated filter.");
 		}
+		
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
 		{
 			THROW_NOT_CONNECTED;
 		}
-		auto res = cam->set_property(id, val);
-		WriteOutput(L"outSuccess", res);
+		//auto res = cam->set_property(id, val);
+		//WriteOutput(L"outSuccess", res);
 		return INVOKE_NORMAL;
 	}
 	/*
@@ -282,15 +282,15 @@ namespace avs
 		}
 		switch (id)
 		{
-		case cv::CAP_PROP_EXPOSURE:
+		case 15:
 			WriteOutput(L"outValue", (double)cam->exposure().count());
 			break;
-		case cv::CAP_PROP_FPS:
+		case 5:
 			WriteOutput(L"outValue", (double)cam->max_framerate());
 			break;
 		default:
-			auto res = cam->get_property(id);
-			WriteOutput(L"outValue", res);
+			//auto res = cam->get_property(id);
+			//WriteOutput(L"outValue", res);
 			break;
 		}
 		return INVOKE_NORMAL;

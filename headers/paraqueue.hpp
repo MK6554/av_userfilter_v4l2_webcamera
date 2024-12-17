@@ -5,14 +5,13 @@
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
-#include <opencv2/core.hpp>
 #include <queue>
 using CLOCK = std::chrono::steady_clock;
 using UNIT = std::chrono::duration<double, std::milli>;
 using TIMEPOINT =  std::chrono::time_point<CLOCK>;
 class ParaQueue {
 public:
-  void push(const cv::Mat &image);
+  void push(const avl::Image &image);
   bool pop(avl::Image &image);
   bool has_enqueued() const;
   bool is_empty() const;
@@ -28,7 +27,7 @@ private:
   int m_max_queue_size;
   mutable std::mutex m_mutex;
   mutable std::mutex m_period_mutex;
-  std::queue<cv::Mat> m_queue;
+  std::queue<avl::Image> m_queue;
   std::queue<TIMEPOINT> m_time_queue;
   UNIT m_period;
   void update_times();

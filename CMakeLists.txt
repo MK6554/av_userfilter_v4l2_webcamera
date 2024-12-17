@@ -20,15 +20,15 @@ set(SRC_CORE
 )
 
 # Specify the source directory
-if(WIN32)
-    set(AVL_LITE_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
-    set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib\\x64\\")
-    set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include\\")
-    set(USER_PROPS_PATH "${AVL_LITE_DIR}props\\UserFilters_v143.props")
-    set(SRC_PLATFORM)
-    add_compile_definitions(PLATFORM_WINDOWS)
-elseif(UNIX)
-    find_package(OpenCV REQUIRED)
+#if(WIN32)
+#    set(AVL_LITE_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
+#    set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib\\x64\\")
+#    set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include\\")
+#    set(USER_PROPS_PATH "${AVL_LITE_DIR}props\\UserFilters_v143.props")
+#    set(SRC_PLATFORM)
+#    add_compile_definitions(PLATFORM_WINDOWS)
+#elseif(UNIX)
+    #find_package(OpenCV REQUIRED)
     set(AVL_LITE_DIR "/etc/avexecutor/")
     set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib/x86_64-linux-gnu/")
     set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include/")
@@ -36,13 +36,13 @@ elseif(UNIX)
         ./sources/paraqueue.cpp
         ./sources/webcamera.cpp
     )
-    add_compile_definitions(PLATFORM_UNIX)
-endif()
+#    add_compile_definitions(PLATFORM_UNIX)
+#endif()
 
 set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # Collect all .cpp files in the src directory
 # file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.cpp")
@@ -57,12 +57,14 @@ include_directories(${HEAD_DIR})
 # Specify the library directories for avexecutor and other dependencies
 link_directories(${AVL_LITE_LIB_DIR})
 
+add_subdirectory("./libv4l2cpp")
+
 # Add the shared library target
 add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 
-if(UNIX)
-    add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
-endif()
+#if(UNIX)
+#    add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
+#endif()
 
 # set_property(TARGET ${UF_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
@@ -70,25 +72,26 @@ endif()
 target_link_libraries(${UF_NAME} PUBLIC
     AVL_Lite # Assuming this is available in the specified library directory
     UserFilters # Assuming this is available in the specified library directory
-    # ${OpenCV_LIBS} <------- linked only for UNIX
+    libv4l2cpp# ${OpenCV_LIBS} <------- linked only for UNIX
 )
 
 # Set the output name for the shared library
 set_target_properties(${UF_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
-if(WIN32)
-    # Windows-specific source files or definitions
-    set_target_properties(${UF_NAME} PROPERTIES VS_USER_PROPS "${USER_PROPS_PATH}")
-elseif(UNIX)
+#if(WIN32)
+#    # Windows-specific source files or definitions
+#    set_target_properties(${UF_NAME} PROPERTIES VS_USER_PROPS "${USER_PROPS_PATH}")
+#elseif(UNIX)
     # Unix-like (Linux, macOS) specific source files or definitions
-    target_link_libraries(${EXE_NAME} ${UF_NAME}
-        AVL_Lite # Assuming this is available in the specified library directory
-        UserFilters # Assuming this is available in the specified library directory
-    )
-    set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-    target_link_libraries(${UF_NAME} PUBLIC ${OpenCV_LIBS})
-    target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
-endif()
+    #target_link_libraries(${UF_NAME}
+    #    AVL_Lite # Assuming this is available in the specified library directory
+    #    UserFilters # Assuming this is available in the specified library directory
+    #    libv4l2cpp
+    #)
+    #set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+    #target_link_libraries(${UF_NAME} PUBLIC ${OpenCV_LIBS})
+    #target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
+#endif()
 
 # Additional flags for compiling and linking (this is added automatically by CMake when using SHARED)
 set_target_properties(${UF_NAME} PROPERTIES
