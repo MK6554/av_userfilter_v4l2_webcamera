@@ -15,10 +15,10 @@ public Main()
 	UfWebCamera_GrabImage_Synchronous
 	(
 		inCameraIndex: Nil
-		inWidth: 2500
-		inHeight: 2500
+		inWidth: 640
+		inHeight: 480
 		inFPS: Nil
-		inExposure: 30
+		inExposure: 300
 		outImage: con_bdeee4a7_fc48_4a49_aa66_ead20671598c
 		outFPS: con_10ab6779_8ce5_46f4_87d3_ffa0e50db367
 	)
@@ -91,7 +91,7 @@ public Main()
 
 	Delay
 	(
-		inTime: 0
+		inTime: 15
 	)
 }
 

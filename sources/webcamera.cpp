@@ -33,9 +33,8 @@ void WebCamera::start_acquisition() {
 }
 
 bool WebCamera::grab_image(avl::Image &image) {
-  if (m_queue.has_enqueued()) {
+  if (m_queue.has_enqueued())
     return m_queue.pop(image);
-  }
   return false;
 }
 
@@ -61,18 +60,24 @@ void WebCamera::set_max_framerate(int new_max) {
   m_queue.set_max_frequency_hz(new_max);
   //set_property(cv::CAP_PROP_FPS, new_max);
   //if(video_capture)
-    video_capture->setFps(new_max);
+  video_capture->setFps(new_max);
 }
 
 void WebCamera::set_exposure(long time_ms) {
-  set_exposure(std::chrono::milliseconds(time_ms));
+  //std::cout << time_ms << std::endl;
+  
+  if (time_ms == -1)
+  {
+    //auto
+    this->video_capture->setExposureMode(V4l2ExposureMode::Auto);
+  }else{
+    this->video_capture->setExposureMode(V4l2ExposureMode::Manual);
+    this->video_capture->setExposureTime(time_ms);
+  }
+  
 }
 
 void WebCamera::set_exposure(std::chrono::milliseconds millis) {
-  m_exposure = millis;
-  auto auto_exp = millis.count() < 0 ? 3 : 1;
-  //set_property(cv::CAP_PROP_EXPOSURE, m_exposure.count());
-  //set_property(cv::CAP_PROP_AUTO_EXPOSURE, auto_exp);
 }
 
 WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
@@ -96,7 +101,7 @@ void WebCamera::captureLoop() {
   sprintf(in_devname, "/dev/video%d", m_camera_index);
   //std::cout << width << std::endl;
 
-  V4L2DeviceParameters param(in_devname, MJPEG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP);
+  V4L2DeviceParameters param(in_devname, MJPEG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
   this->video_capture = V4l2Capture::create(param);
 
   if(!this->video_capture) {

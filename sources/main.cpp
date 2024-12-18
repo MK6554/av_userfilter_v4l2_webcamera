@@ -255,6 +255,9 @@ namespace avs
 		{
 			THROW_NOT_CONNECTED;
 		}
+
+		std::cout << "WebCameraSetExposure " << val.GetValueOr(-1) << std::endl;
+
 		cam->set_exposure(val.GetValueOr(-1));
 		return INVOKE_NORMAL;
 	}
