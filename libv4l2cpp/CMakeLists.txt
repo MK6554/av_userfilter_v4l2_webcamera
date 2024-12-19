@@ -12,13 +12,12 @@ file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
 
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
     POSITION_INDEPENDENT_CODE ON
 )
-
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/inc")
 
 add_executable (${PROJECT_NAME}test main.cpp)
 target_link_libraries (${PROJECT_NAME}test ${PROJECT_NAME}) 
+

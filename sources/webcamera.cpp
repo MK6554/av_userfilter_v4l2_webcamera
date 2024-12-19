@@ -21,9 +21,9 @@ void sleep(int time_ms) {
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
 }
 void wait(TIMEPOINT from, double max_freq_hz) {
-  if (max_freq_hz < 0) {
+  if (max_freq_hz < 0)
     return;
-  }
+  
   auto min_period = std::chrono::seconds(1) / max_freq_hz;
   std::this_thread::sleep_until(min_period + from);
 }
@@ -47,10 +47,6 @@ void WebCamera::close_acquisition() {
 
   delete this->video_capture; // releasing camera in destructor
   delete this->buffer; //releasing image buffer
-
-  //if (m_capture.isOpened()) {
-  //  m_capture.release();
-  //}
 }
 
 bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
@@ -58,14 +54,10 @@ bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
 void WebCamera::set_max_framerate(int new_max) {
   m_max_framerate = new_max;
   m_queue.set_max_frequency_hz(new_max);
-  //set_property(cv::CAP_PROP_FPS, new_max);
-  //if(video_capture)
   video_capture->setFps(new_max);
 }
 
-void WebCamera::set_exposure(long time_ms) {
-  //std::cout << time_ms << std::endl;
-  
+void WebCamera::set_exposure(long time_ms) {  
   if (time_ms == -1)
   {
     //auto
@@ -88,18 +80,12 @@ WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
 
 WebCamera::~WebCamera() { close_acquisition(); }
 void WebCamera::captureLoop() {
-  // sudo apt install uvcdynctrl
-  // uvcdynctrl -c -v
   auto width = m_width < 0 ? MAX_DIM : m_width;
   auto height = m_height < 0 ? MAX_DIM : m_height;
 
-  //m_capture.set(cv::CAP_PROP_EXPOSURE, m_exposure.count());
-  //m_capture.set(cv::CAP_PROP_AUTO_EXPOSURE,
-  //              1); // 1 means manual mode (at least for some cameras)
-
-  char in_devname[50];// = "/dev/video"
+  //path to camera device
+  char in_devname[50];// = "buffer for path /dev/video%d"
   sprintf(in_devname, "/dev/video%d", m_camera_index);
-  //std::cout << width << std::endl;
 
   V4L2DeviceParameters param(in_devname, MJPEG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
   this->video_capture = V4l2Capture::create(param);
@@ -125,6 +111,7 @@ void WebCamera::captureLoop() {
         this->m_running = false;
         return;
       }
+
       avl::Image outImage;
 
       avl::LoadImageFromArray(reinterpret_cast<atl::byte*> (this->buffer), rsize, false, outImage);

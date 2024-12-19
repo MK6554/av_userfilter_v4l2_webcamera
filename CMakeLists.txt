@@ -72,7 +72,7 @@ add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 target_link_libraries(${UF_NAME} PUBLIC
     AVL_Lite # Assuming this is available in the specified library directory
     UserFilters # Assuming this is available in the specified library directory
-    libv4l2cpp# ${OpenCV_LIBS} <------- linked only for UNIX
+    libv4l2cpp#  <------- linked only for UNIX
 )
 
 # Set the output name for the shared library
@@ -106,5 +106,15 @@ add_custom_target(clear
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/cmake_install.cmake"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/Makefile"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/*.so"
+    COMMENT "Removing CMake-generated files and the executable"
+
+    COMMENT "${CMAKE_BINARY_DIR}/libv4l2cpp"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/libv4l2cpp/CMakeFiles"
+    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/CMakeCache.txt"
+    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/cmake_install.cmake"
+    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/Makefile"
+    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/*.so"
+    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/*.a"
+    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/libv4l2cpptest"
     COMMENT "Removing CMake-generated files and the executable"
 )

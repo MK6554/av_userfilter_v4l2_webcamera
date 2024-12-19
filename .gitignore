@@ -54,3 +54,7 @@ bld/
 
 /build/**
 /CMakeFiles/**
+
+
+/libv4l2cpp/build/**
+/libv4l2cpp/CMakeFiles/**

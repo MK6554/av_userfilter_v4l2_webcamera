@@ -75,10 +75,8 @@ namespace avs
 		read_inputs();
 		get_or_make_device();
 		if (!m_camera->is_running())
-		{
-
 			m_camera->start_acquisition();
-		}
+		
 		return INIT_OK;
 	}
 
@@ -89,7 +87,10 @@ namespace avs
 		add_camera_params();
 	}
 
-	int WebCameraStartAcquisition::Invoke() { return INVOKE_LOOP; }
+	int WebCameraStartAcquisition::Invoke() 
+	{ 
+		return INVOKE_LOOP; 
+	}
 
 	void WebCameraCloseAcquisition::Define()
 	{
@@ -118,7 +119,6 @@ namespace avs
 	{
 		while (!m_camera->can_grab())
 		{
-
 			if (IsWorkCancelled())
 			{
 				outImage.Reset();
@@ -135,6 +135,7 @@ namespace avs
 		WriteOutput<float>(L"outFPS", fps);
 		return INVOKE_LOOP;
 	}
+	
 	void WebCameraGrabImage_WithTimeout::Define()
 	{
 		SetName(L"UfWebCamera_GrabImage_WithTimeout");
@@ -184,6 +185,7 @@ namespace avs
 		AddOutput(L"outSuccess", L"Bool", L"Status");
 		AddAttribute(L"FilterGroup", L"UfWebCamera_SetParameter<Generic>");
 	}
+
 	int WebCameraSetParameter::Invoke()
 	{
 		read_inputs();
@@ -200,7 +202,7 @@ namespace avs
 		case 5:
 			throw atl::DomainError("To limit frame rate use the dedicated filter.");
 		}
-		
+
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
 		{
@@ -221,6 +223,7 @@ namespace avs
 		AddInput(L"inFpsLimit", L"Integer<1,INF>*", L"", L"Fps limit.");
 		AddAttribute(L"FilterGroup", L"UfWebCamera_SetParameter<FrameRate>");
 	}
+	
 	int WebCameraSetFrameRateLimit::Invoke()
 	{
 		read_inputs();
@@ -228,9 +231,8 @@ namespace avs
 		ReadInput(L"inFpsLimit", val);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-		{
 			THROW_NOT_CONNECTED;
-		}
+		
 		cam->set_max_framerate(val.GetValueOr(FRAMERATE_MAX));
 		return INVOKE_NORMAL;
 	}
@@ -252,9 +254,7 @@ namespace avs
 		ReadInput(L"inExposure", val);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-		{
 			THROW_NOT_CONNECTED;
-		}
 
 		std::cout << "WebCameraSetExposure " << val.GetValueOr(-1) << std::endl;
 
@@ -280,9 +280,8 @@ namespace avs
 		ReadInput(L"inParameterId", id);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-		{
 			THROW_NOT_CONNECTED;
-		}
+
 		switch (id)
 		{
 		case 15:
@@ -314,9 +313,8 @@ namespace avs
 		read_inputs();
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-		{
 			THROW_NOT_CONNECTED;
-		}
+		
 		WriteOutput(L"outFpsLimit", cam->max_framerate());
 		return INVOKE_NORMAL;
 	}
@@ -336,9 +334,8 @@ namespace avs
 		read_inputs();
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-		{
 			THROW_NOT_CONNECTED;
-		}
+		
 		WriteOutput(L"outExposure", (int)cam->exposure().count());
 		return INVOKE_NORMAL;
 	}
@@ -360,5 +357,4 @@ namespace avs
 	}
 
 	static RegisterUserObjects registerUserObjects;
-
-} // namespace avs
+} 

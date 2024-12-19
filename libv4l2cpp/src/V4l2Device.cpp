@@ -29,9 +29,8 @@ unsigned int V4l2Device::fourcc(const char* format) {
 	char fourcc[4];
 	memset(&fourcc, 0, sizeof(fourcc));
 	if (format != NULL)
-	{
 		strncpy(fourcc, format, 4);	
-	}
+
 	return v4l2_fourcc(fourcc[0], fourcc[1], fourcc[2], fourcc[3]);	
 }
 
@@ -289,18 +288,15 @@ int V4l2Device::configureParam(int fd, int fps)
 		param.type = m_deviceType;
 		param.parm.capture.timeperframe.numerator = 1;
 		param.parm.capture.timeperframe.denominator = fps;
-
 		
-		if (ioctl(fd, VIDIOC_S_PARM, &param) == -1)
-		{
+		if (ioctl(fd, VIDIOC_S_PARM, &param) == -1){
 			LOG(WARN) << "Cannot set param for device:" << m_params.m_devName << " " << strerror(errno);
+			return -1;
 		}
 	
 		LOG(INFO) << "fps:" << param.parm.capture.timeperframe.numerator << "/" << param.parm.capture.timeperframe.denominator;
 		LOG(INFO) << "nbBuffer:" << param.parm.capture.readbuffers;
 	}
-
-
 	return 0;
 }
 
