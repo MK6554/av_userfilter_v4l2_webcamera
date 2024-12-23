@@ -152,7 +152,6 @@ int V4l2Device::checkCapabilities(int fd, unsigned int mandatoryCapabilities)
 // configure capture format 
 int V4l2Device::configureFormat(int fd)
 {
-	
 	// get current configuration
 	this->queryFormat();		
 

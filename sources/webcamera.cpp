@@ -30,6 +30,7 @@ void wait(TIMEPOINT from, double max_freq_hz) {
 void WebCamera::start_acquisition() {
   m_running = true;
   m_cap_thread = std::thread(&WebCamera::captureLoop, this);
+
 }
 
 bool WebCamera::grab_image(avl::Image &image) {
@@ -92,13 +93,24 @@ void WebCamera::captureLoop() {
 
   if(!this->video_capture) {
     this->m_running = false;
+
+    //In case when we canot init capute we shuld crash
+    std::cout << "Camera Not initialized, or missing" << std::endl;
+    throw new atl::IoError("Camera Not initialized, or missing");
+
     return;
   }
 
+  // Allocating buffer
   this->buffer = new char[this->video_capture->getBufferSize()];
 
+  // Time per frame in usec
+  double one_dev_by_fps = 1. / this->m_max_framerate;
+  one_dev_by_fps = std::floor(one_dev_by_fps * 10000.0) / 10000.0;
+  int calculated_usec = one_dev_by_fps * 10000000;
+  
+  tv.tv_usec = calculated_usec; //30000; // <---- this must be calculated
   tv.tv_sec  = 0;
-  tv.tv_usec = 17000; // <---- this must be calculated
 
   while (m_running) {
 

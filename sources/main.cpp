@@ -128,6 +128,9 @@ namespace avs
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
+		if (!m_camera)
+			THROW_NOT_CONNECTED;
+
 		m_camera->grab_image(outImage);
 
 		auto fps = (float)m_camera->get_fps();
@@ -165,6 +168,9 @@ namespace avs
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
+		if (!m_camera)
+			THROW_NOT_CONNECTED;
+
 		m_camera->grab_image(transImage);
 		outImage = transImage;
 		auto fps = (float)m_camera->get_fps();
@@ -205,9 +211,8 @@ namespace avs
 
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-		{
 			THROW_NOT_CONNECTED;
-		}
+		
 		//auto res = cam->set_property(id, val);
 		//WriteOutput(L"outSuccess", res);
 		return INVOKE_NORMAL;
@@ -256,7 +261,7 @@ namespace avs
 		if (!cam)
 			THROW_NOT_CONNECTED;
 
-		std::cout << "WebCameraSetExposure " << val.GetValueOr(-1) << std::endl;
+		//std::cout << "WebCameraSetExposure " << val.GetValueOr(-1) << std::endl;
 
 		cam->set_exposure(val.GetValueOr(-1));
 		return INVOKE_NORMAL;

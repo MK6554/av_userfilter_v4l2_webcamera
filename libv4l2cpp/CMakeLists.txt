@@ -18,6 +18,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/inc")
 
-add_executable (${PROJECT_NAME}test main.cpp)
-target_link_libraries (${PROJECT_NAME}test ${PROJECT_NAME}) 
+#add_executable (${PROJECT_NAME}test main.cpp)
+#target_link_libraries (${PROJECT_NAME}test ${PROJECT_NAME}) 
 

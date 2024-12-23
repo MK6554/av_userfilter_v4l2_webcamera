@@ -15,8 +15,8 @@ public Main()
 	UfWebCamera_GrabImage_Synchronous
 	(
 		inCameraIndex: Nil
-		inWidth: 640
-		inHeight: 480
+		inWidth: 2320
+		inHeight: 1744
 		inFPS: Nil
 		inExposure: 300
 		outImage: con_bdeee4a7_fc48_4a49_aa66_ead20671598c
