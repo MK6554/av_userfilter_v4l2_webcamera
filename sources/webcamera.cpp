@@ -84,27 +84,23 @@ void WebCamera::close_acquisition() {
 bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
 
 void WebCamera::set_max_framerate(int new_max) {
-  //This is terrible way of setting fps 
-  //but this works 
-
-  //calling video_capture->setFps returns device busy ather registering a single frame 
-  //video_capture->setFps retuns busy even when camera thread is stopped
-
-  //this releses the device and allocate it again with correct fps
-  // also realocate camera buffer
-
   if (this->m_max_framerate != new_max)
   {
     this->m_max_framerate = new_max;
 
-    this->close_acquisition();
+    // Stoping capture thread
+    m_running = false;
+    if (m_cap_thread.joinable())
+      m_cap_thread.join();
 
-    sleep(50);
-    
-    this->start_acquisition();
+    //Stoping video_capture setting new fps and restarting
+    this->video_capture->stop();
+    this->video_capture->setFps(this->m_max_framerate);
+    this->video_capture->start();
 
-    sleep(50);
-    set_exposure(this->m_exposure);
+    // Starting capture thread
+    m_running = true;
+    m_cap_thread = std::thread(&WebCamera::captureLoop, this);
   }
 }
 

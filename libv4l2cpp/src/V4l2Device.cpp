@@ -280,7 +280,7 @@ int V4l2Device::setExposureTime(int time)
 
 int V4l2Device::setFPS(int fps)
 {
-	LOG(INFO) <<  "Setting FPS: " << fps;
+	LOG(INFO) << "Setting FPS: " << fps;
 
 	if (fps!=0)
 	{
