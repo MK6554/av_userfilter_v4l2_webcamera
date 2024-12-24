@@ -101,6 +101,8 @@ void WebCamera::set_max_framerate(int new_max) {
     this->video_capture->stop();
     sleep(10);
     this->video_capture->setFps(this->m_max_framerate);
+    this->m_queue.set_max_frequency_hz(this->m_max_framerate);
+
     sleep(10);
     this->video_capture->start();
 
