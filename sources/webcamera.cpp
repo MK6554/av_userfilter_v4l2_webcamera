@@ -88,15 +88,23 @@ void WebCamera::set_max_framerate(int new_max) {
   {
     this->m_max_framerate = new_max;
 
+    //std::cout << this->m_max_framerate << std::endl;
+
     // Stoping capture thread
     m_running = false;
     if (m_cap_thread.joinable())
       m_cap_thread.join();
 
+    sleep(10);
+
     //Stoping video_capture setting new fps and restarting
     this->video_capture->stop();
+    sleep(10);
     this->video_capture->setFps(this->m_max_framerate);
+    sleep(10);
     this->video_capture->start();
+
+    sleep(5);
 
     // Starting capture thread
     m_running = true;
