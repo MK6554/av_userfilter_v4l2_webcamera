@@ -104,6 +104,14 @@ void WebCamera::set_max_framerate(int new_max) {
     sleep(10);
     this->video_capture->start();
 
+    // Time per frame in usec
+    double one_dev_by_fps = 1. / this->m_max_framerate;
+    one_dev_by_fps = std::floor(one_dev_by_fps * 10000.0) / 10000.0;
+    int calculated_usec = one_dev_by_fps * 10000000;
+    
+    tv.tv_usec = calculated_usec;
+    tv.tv_sec  = 0;
+
     sleep(5);
 
     // Starting capture thread
