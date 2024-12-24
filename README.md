@@ -26,6 +26,7 @@ Having Aurora™ Vision Studio [Runtime](https://www.adaptive-vision.com/en/user
    ```
 5. Open the console in directory, and run
    ```sh
+   sudo chmod +x build.sh
    ./build.sh
    ```
 6. After building, the filter should be ready to use, you can connect the web camera and test it.
