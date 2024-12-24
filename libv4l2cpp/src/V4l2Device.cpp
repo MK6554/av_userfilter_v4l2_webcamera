@@ -105,7 +105,7 @@ int V4l2Device::initdevice(const char *dev_name, unsigned int mandatoryCapabilit
 		this->close();
 		return -1;
 	}
-	if (configureParam(m_fd, m_params.m_fps) !=0)
+	if (setFPS(m_params.m_fps) !=0)
 	{
 		this->close();
 		return -1;
@@ -277,18 +277,21 @@ int V4l2Device::setExposureTime(int time)
 	return 0;
 }
 
-// configure capture FPS 
-int V4l2Device::configureParam(int fd, int fps)
+
+int V4l2Device::setFPS(int fps)
 {
+	LOG(INFO) <<  "Setting FPS: " << fps;
+
 	if (fps!=0)
 	{
-		struct v4l2_streamparm   param;			
+		struct v4l2_streamparm  param;			
 		memset(&(param), 0, sizeof(param));
-		param.type = m_deviceType;
+		param.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
 		param.parm.capture.timeperframe.numerator = 1;
 		param.parm.capture.timeperframe.denominator = fps;
 		
-		if (ioctl(fd, VIDIOC_S_PARM, &param) == -1){
+		if (ioctl(getFd(), VIDIOC_S_PARM, &param) == -1){
 			LOG(WARN) << "Cannot set param for device:" << m_params.m_devName << " " << strerror(errno);
 			return -1;
 		}

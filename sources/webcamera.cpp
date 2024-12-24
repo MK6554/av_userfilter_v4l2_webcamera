@@ -29,58 +29,7 @@ void wait(TIMEPOINT from, double max_freq_hz) {
 }
 void WebCamera::start_acquisition() {
   m_running = true;
-  m_cap_thread = std::thread(&WebCamera::captureLoop, this);
 
-}
-
-bool WebCamera::grab_image(avl::Image &image) {
-  if (m_queue.has_enqueued())
-    return m_queue.pop(image);
-  return false;
-}
-
-void WebCamera::close_acquisition() {
-  m_running = false;
-  if (m_cap_thread.joinable()) {
-    m_cap_thread.join();
-  }
-  this->video_capture->stop(); // looks cool does nothing 
-
-  delete this->video_capture; // releasing camera in destructor
-  delete this->buffer; //releasing image buffer
-}
-
-bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
-
-void WebCamera::set_max_framerate(int new_max) {
-  m_max_framerate = new_max;
-  m_queue.set_max_frequency_hz(new_max);
-  video_capture->setFps(new_max);
-}
-
-void WebCamera::set_exposure(long time_ms) {  
-  if (time_ms == -1)
-  {
-    //auto
-    this->video_capture->setExposureMode(V4l2ExposureMode::Auto);
-  }else{
-    this->video_capture->setExposureMode(V4l2ExposureMode::Manual);
-    this->video_capture->setExposureTime(time_ms);
-  }
-  
-}
-
-void WebCamera::set_exposure(std::chrono::milliseconds millis) {
-}
-
-WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
-                     long exposure_ms)
-    : m_queue(framerate), m_camera_index(m_cameraIndex), m_width(width),
-      m_height(height), m_max_framerate(framerate), m_running(false),
-      m_exposure(exposure_ms) {}
-
-WebCamera::~WebCamera() { close_acquisition(); }
-void WebCamera::captureLoop() {
   auto width = m_width < 0 ? MAX_DIM : m_width;
   auto height = m_height < 0 ? MAX_DIM : m_height;
 
@@ -112,8 +61,75 @@ void WebCamera::captureLoop() {
   tv.tv_usec = calculated_usec; //30000; // <---- this must be calculated
   tv.tv_sec  = 0;
 
-  while (m_running) {
+  m_cap_thread = std::thread(&WebCamera::captureLoop, this);
+}
 
+bool WebCamera::grab_image(avl::Image &image) {
+  if (m_queue.has_enqueued())
+    return m_queue.pop(image);
+  return false;
+}
+
+void WebCamera::close_acquisition() {
+  m_running = false;
+  if (m_cap_thread.joinable())
+    m_cap_thread.join();
+  
+  //this->video_capture->stop(); // looks cool does nothing 
+
+  delete this->video_capture; // releasing camera in destructor
+  delete this->buffer; //releasing image buffer
+}
+
+bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
+
+void WebCamera::set_max_framerate(int new_max) {
+  //This is terrible way of setting fps 
+  //but this works 
+
+  //calling video_capture->setFps returns device busy ather registering a single frame 
+  //video_capture->setFps retuns busy even when camera thread is stopped
+
+  //this releses the device and allocate it again with correct fps
+  // also realocate camera buffer
+
+  if (this->m_max_framerate != new_max)
+  {
+    this->m_max_framerate = new_max;
+
+    this->close_acquisition();
+
+    sleep(50);
+    
+    this->start_acquisition();
+
+    sleep(50);
+    set_exposure(this->m_exposure);
+  }
+}
+
+void WebCamera::set_exposure(long time_ms) {  
+  this->m_exposure = time_ms;
+  
+  if (time_ms == -1)
+    this->video_capture->setExposureMode(V4l2ExposureMode::Auto);
+  else{
+    this->video_capture->setExposureMode(V4l2ExposureMode::Manual);
+    this->video_capture->setExposureTime(time_ms);
+  }
+}
+
+WebCamera::WebCamera(int m_cameraIndex, int width, int height, int framerate,
+                     long exposure_ms)
+    : m_queue(framerate), m_camera_index(m_cameraIndex), m_width(width),
+      m_height(height), m_max_framerate(framerate), m_running(false),
+      m_exposure(exposure_ms) {}
+
+WebCamera::~WebCamera() { close_acquisition(); }
+
+void WebCamera::captureLoop() 
+{
+  while (m_running) {
     int readable = video_capture->isReadable(&tv);
     if (readable == 1){
       int rsize = video_capture->read(this->buffer, video_capture->getBufferSize());

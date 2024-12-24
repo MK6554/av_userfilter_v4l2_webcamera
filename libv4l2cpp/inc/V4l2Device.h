@@ -93,7 +93,7 @@ class V4l2Device
 		int checkCapabilities(int fd, unsigned int mandatoryCapabilities);
 		int configureFormat(int fd);
 		int configureFormat(int fd, unsigned int format, unsigned int width, unsigned int height);
-		int configureParam(int fd, int fps);
+		int setFPS(int fps);
 
 		int configureExposureMode(int fd, V4l2ExposureMode exposure_mode);
 
@@ -128,7 +128,7 @@ class V4l2Device
 		int setExposureTime(int time);
 
 		int setFps(int fps) {
-			return this->configureParam(m_fd, fps);
+			return this->setFPS(fps);
 		}	
 
 		int setExposureMode(V4l2ExposureMode exposure_mode)

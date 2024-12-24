@@ -290,7 +290,7 @@ namespace avs
 		switch (id)
 		{
 		case 15:
-			WriteOutput(L"outValue", (double)cam->exposure().count());
+			WriteOutput(L"outValue", (double)cam->exposure());
 			break;
 		case 5:
 			WriteOutput(L"outValue", (double)cam->max_framerate());
@@ -341,7 +341,7 @@ namespace avs
 		if (!cam)
 			THROW_NOT_CONNECTED;
 		
-		WriteOutput(L"outExposure", (int)cam->exposure().count());
+		WriteOutput(L"outExposure", (int)cam->exposure());
 		return INVOKE_NORMAL;
 	}
 

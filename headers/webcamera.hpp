@@ -22,14 +22,13 @@ public:
   bool can_grab() const;
   bool is_running() const { return m_running; }
   double get_fps() const { return m_queue.get_fps(); }
-  std::chrono::milliseconds exposure() const { return m_exposure; }
+  long exposure() const { return m_exposure; }
 
   void set_max_framerate(int new_max);
   void set_exposure(long time_ms);
-  void set_exposure(std::chrono::milliseconds millis);
 
 private:
-  std::chrono::milliseconds m_exposure;
+  long m_exposure;
   int m_width, m_height, m_max_framerate;
   int m_camera_index;
 

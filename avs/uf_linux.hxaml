@@ -106,9 +106,9 @@
                         <CheckBox
                             Name="checkBox_FPS" />
                         <Slider
-                            InitialValue="60"
+                            InitialValue="30"
                             IsVisible="{Binding @con_6bab60c8_9a9e_441b_93ed_befc24974805}"
-                            Maximum="200"
+                            Maximum="60"
                             Minimum="5"
                             Name="sliderFps"
                             Step="5" />
