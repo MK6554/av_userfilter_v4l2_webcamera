@@ -268,6 +268,8 @@ int V4l2Device::setExposureTime(int time)
 	ctrl.id = V4L2_CID_EXPOSURE_ABSOLUTE;
 	ctrl.value = time;
 
+	LOG(INFO) << "Setting ExposureTime: " << time;
+
 	if (ioctl(getFd(), VIDIOC_S_CTRL, &ctrl) == -1)
 	{
 		LOG(WARN) << "Setting exposure time failed"; 

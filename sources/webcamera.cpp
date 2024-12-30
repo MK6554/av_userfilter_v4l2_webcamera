@@ -15,11 +15,10 @@
 #include <unistd.h>
 #define MAX_DIM 65535
 
-const int MJPEG = v4l2_fourcc('M', 'J', 'P', 'G');
-
 void sleep(int time_ms) {
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
 }
+
 void wait(TIMEPOINT from, double max_freq_hz) {
   if (max_freq_hz < 0)
     return;
@@ -27,6 +26,17 @@ void wait(TIMEPOINT from, double max_freq_hz) {
   auto min_period = std::chrono::seconds(1) / max_freq_hz;
   std::this_thread::sleep_until(min_period + from);
 }
+
+void WebCamera::update_camera_external_timer() { 
+  // Time per frame in usec
+  double one_dev_by_fps = 1. / this->m_max_framerate;
+  one_dev_by_fps = std::floor(one_dev_by_fps * 10000.0) / 10000.0;
+  int calculated_usec = one_dev_by_fps * 10000000;
+  
+  this->tv.tv_usec = calculated_usec;
+  this->tv.tv_sec  = 0;
+}
+
 void WebCamera::start_acquisition() {
   m_running = true;
 
@@ -37,7 +47,7 @@ void WebCamera::start_acquisition() {
   char in_devname[50];// = "buffer for path /dev/video%d"
   sprintf(in_devname, "/dev/video%d", m_camera_index);
 
-  V4L2DeviceParameters param(in_devname, MJPEG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
+  V4L2DeviceParameters param(in_devname, V4L2_PIX_FMT_MJPG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
   this->video_capture = V4l2Capture::create(param);
 
   if(!this->video_capture) {
@@ -53,13 +63,8 @@ void WebCamera::start_acquisition() {
   // Allocating buffer
   this->buffer = new char[this->video_capture->getBufferSize()];
 
-  // Time per frame in usec
-  double one_dev_by_fps = 1. / this->m_max_framerate;
-  one_dev_by_fps = std::floor(one_dev_by_fps * 10000.0) / 10000.0;
-  int calculated_usec = one_dev_by_fps * 10000000;
-  
-  tv.tv_usec = calculated_usec; //30000; // <---- this must be calculated
-  tv.tv_sec  = 0;
+  // update capture timer;
+  update_camera_external_timer();
 
   m_cap_thread = std::thread(&WebCamera::captureLoop, this);
 }
@@ -76,19 +81,18 @@ void WebCamera::close_acquisition() {
     m_cap_thread.join();
   
   //this->video_capture->stop(); // looks cool does nothing 
-
   delete this->video_capture; // releasing camera in destructor
   delete this->buffer; //releasing image buffer
 }
 
-bool WebCamera::can_grab() const { return m_queue.has_enqueued(); }
+bool WebCamera::can_grab() const {
+  return m_queue.has_enqueued(); 
+}
 
 void WebCamera::set_max_framerate(int new_max) {
-  if (this->m_max_framerate != new_max)
-  {
-    this->m_max_framerate = new_max;
+  if (this->m_max_framerate != new_max) {
 
-    //std::cout << this->m_max_framerate << std::endl;
+    this->m_max_framerate = new_max;
 
     // Stoping capture thread
     m_running = false;
@@ -106,13 +110,8 @@ void WebCamera::set_max_framerate(int new_max) {
     sleep(10);
     this->video_capture->start();
 
-    // Time per frame in usec
-    double one_dev_by_fps = 1. / this->m_max_framerate;
-    one_dev_by_fps = std::floor(one_dev_by_fps * 10000.0) / 10000.0;
-    int calculated_usec = one_dev_by_fps * 10000000;
-    
-    tv.tv_usec = calculated_usec;
-    tv.tv_sec  = 0;
+    // update capture timer;
+    update_camera_external_timer();
 
     sleep(5);
 

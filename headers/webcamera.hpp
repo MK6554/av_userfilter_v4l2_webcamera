@@ -32,6 +32,8 @@ private:
   int m_width, m_height, m_max_framerate;
   int m_camera_index;
 
+  void update_camera_external_timer();
+
   V4l2Capture* video_capture;
   char* buffer;
   timeval tv;

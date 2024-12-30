@@ -19,22 +19,11 @@
 
 #include <mutex>
 
-#ifndef V4L2_PIX_FMT_VP8
+
 #define V4L2_PIX_FMT_VP8  v4l2_fourcc('V', 'P', '8', '0')
-#endif
-
-#ifndef V4L2_PIX_FMT_VP9
 #define V4L2_PIX_FMT_VP9  v4l2_fourcc('V', 'P', '9', '0')
-#endif
-
-#ifndef V4L2_PIX_FMT_HEVC
 #define V4L2_PIX_FMT_HEVC  v4l2_fourcc('H', 'E', 'V', 'C')
-#endif
-
-
-#ifndef V4L2_PIX_FMT_HEVC
-#define V4L2_PIX_FMT_MJPG v4l2_fourcc('M', 'J', 'P', 'G')
-#endif
+#define V4L2_PIX_FMT_MJPG  v4l2_fourcc('M', 'J', 'P', 'G')
 
 
 enum V4l2IoType
