@@ -99,12 +99,8 @@ int main(int argc, char* argv[])
 			tv.tv_sec=1;
 			tv.tv_usec=0;
 
-			int ret = videoCapture->isReadable(&tv);
-			if (ret == 1)
+			if (videoCapture->isReadable(&tv))
 			{
-				
-				
-				//char buffer[2000000];
 				int rsize = videoCapture->read(buffer, videoCapture->getBufferSize());
 
 				if (rsize == -1)
@@ -114,14 +110,12 @@ int main(int argc, char* argv[])
 				}
 				else
 				{
-					LOG(NOTICE) << "size:" << rsize;
+					LOG(NOTICE) << "size:\t" << rsize;
 					static int stop_count = 0;
-					if(framecount and stop_count < framecount){
+					if(framecount && stop_count < framecount){
 						std::string filename = "Frame" + std::to_string(stop_count) + '.' + V4l2Device::fourcc(videoCapture->getFormat());
 						stop_count++;
 
-
-						LOG(WARN) << "rsize" << rsize; 
 
 						FILE *fp = fopen(filename.c_str(), "wb");
 						fwrite(buffer, 1, rsize, fp);
@@ -130,7 +124,7 @@ int main(int argc, char* argv[])
 					}
 				}
 			}
-			else if (ret == -1)
+			else
 			{
 				LOG(NOTICE) << "stop " << strerror(errno); 
 				stop=1;

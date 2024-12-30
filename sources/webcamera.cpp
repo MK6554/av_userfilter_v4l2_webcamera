@@ -53,7 +53,7 @@ void WebCamera::start_acquisition() {
   if(!this->video_capture) {
     this->m_running = false;
 
-    //In case when we canot init capute we shuld crash
+    //In case when we canot init captue we shuld crash
     std::cout << "Camera Not initialized, or missing" << std::endl;
     throw new atl::IoError("Camera Not initialized, or missing");
 
@@ -80,7 +80,6 @@ void WebCamera::close_acquisition() {
   if (m_cap_thread.joinable())
     m_cap_thread.join();
   
-  //this->video_capture->stop(); // looks cool does nothing 
   delete this->video_capture; // releasing camera in destructor
   delete this->buffer; //releasing image buffer
 }
@@ -143,22 +142,29 @@ WebCamera::~WebCamera() { close_acquisition(); }
 void WebCamera::captureLoop() 
 {
   while (m_running) {
-    int readable = video_capture->isReadable(&tv);
-    if (readable == 1){
+    if (video_capture->isReadable(&tv)) {
       int rsize = video_capture->read(this->buffer, video_capture->getBufferSize());
 
       if (rsize == -1)
       {
         this->m_running = false;
+        if (m_cap_thread.joinable())
+          m_cap_thread.join();
+
+        std::cout << "Can't read data from Camera" << std::endl;
+        throw new atl::IoError("Can't read data from Camera");
+
         return;
       }
 
       avl::Image outImage;
 
       avl::LoadImageFromArray(reinterpret_cast<atl::byte*> (this->buffer), rsize, false, outImage);
+      //outImage.MakeDataOwn(); // <---- Scary memory menagment boooooo
       m_queue.push(outImage);
     }
-    //outImage.MakeDataOwn(); // <---- Scary memory menagment boooooo
+    
+    //unnecessary since video_capture->isReadable
     //wait(m_queue.last_frame_time(), m_max_framerate);
   }
 }
