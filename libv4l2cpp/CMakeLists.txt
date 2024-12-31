@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.0)
 get_filename_component(BASENAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(${BASENAME})
 
+set(CMAKE_STATIC_LIBRARY_PREFIX "")
+
 set (CMAKE_CXX_STANDARD 11)
 
 #aux_source_directory(src SRC_FILES)
