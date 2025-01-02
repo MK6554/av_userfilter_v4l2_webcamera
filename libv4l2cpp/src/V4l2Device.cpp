@@ -294,11 +294,12 @@ int V4l2Device::setFPS(int fps)
 		param.parm.capture.timeperframe.denominator = fps;
 		
 		if (ioctl(getFd(), VIDIOC_S_PARM, &param) == -1){
+			LOG(WARN) << "Cannot update device FPS:";
 			LOG(WARN) << "Cannot set param for device:" << m_params.m_devName << " " << strerror(errno);
 			return -1;
 		}
-	
-		LOG(INFO) << "fps:" << param.parm.capture.timeperframe.numerator << "/" << param.parm.capture.timeperframe.denominator;
+
+		LOG(INFO) << "Updated device FPS timeperframe.numerator " << param.parm.capture.timeperframe.numerator << " timeperframe.denominator " << param.parm.capture.timeperframe.denominator;
 		//LOG(INFO) << "nbBuffer:" << param.parm.capture.readbuffers;
 	}
 	return 0;

@@ -70,7 +70,7 @@ bool V4l2MmapDevice::start()
 	}
 	else
 	{
-		LOG(INFO) << "Device " << m_params.m_devName << " nb buffer:" << req.count;
+		LOG(INFO) << "Device " << m_params.m_devName << " buffer number:" << req.count;
 		
 		// allocate buffers
 		memset(&m_buffer,0, sizeof(m_buffer));
