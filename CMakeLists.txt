@@ -19,6 +19,9 @@ set(SRC_CORE
     ./sources/webcamera_manager.cpp
 )
 
+option(LOG_DEBUG "Enable logging for debugging" OFF)
+
+
 # Specify the source directory
 #if(WIN32)
 #    set(AVL_LITE_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
@@ -59,8 +62,16 @@ link_directories(${AVL_LITE_LIB_DIR})
 
 add_subdirectory("./libv4l2cpp")
 
+
+
+
 # Add the shared library target
 add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
+
+if(LOG_DEBUG)
+    message(STATUS "LOG_DEBUG is set to ON")
+    target_compile_definitions(${UF_NAME} PRIVATE LOG_DEBUG)
+endif()
 
 #if(UNIX)
 #    add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})

@@ -268,7 +268,7 @@ int V4l2Device::setExposureTime(int time_ms)
 	ctrl.id = V4L2_CID_EXPOSURE_ABSOLUTE;
 	ctrl.value = time_ms * 10; // 30ms = 300
 
-	LOG(INFO) << "Setting ExposureTime: " << time;
+	LOG(INFO) << "Setting exposure_time_absolute: " << ctrl.value << " (" << time_ms << "ms)";
 
 	if (ioctl(getFd(), VIDIOC_S_CTRL, &ctrl) == -1)
 	{
@@ -299,7 +299,7 @@ int V4l2Device::setFPS(int fps)
 		}
 	
 		LOG(INFO) << "fps:" << param.parm.capture.timeperframe.numerator << "/" << param.parm.capture.timeperframe.denominator;
-		LOG(INFO) << "nbBuffer:" << param.parm.capture.readbuffers;
+		//LOG(INFO) << "nbBuffer:" << param.parm.capture.readbuffers;
 	}
 	return 0;
 }

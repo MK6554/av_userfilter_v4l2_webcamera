@@ -73,7 +73,7 @@
                         <CheckBox
                             Name="checkBox_Expo" />
                         <Slider
-                            InitialValue="30"
+                            InitialValue="33"
                             IsVisible="{Binding @con_d833905b_1ce8_45f8_963b_201c5af28b0b}"
                             Maximum="200"
                             Minimum="1"

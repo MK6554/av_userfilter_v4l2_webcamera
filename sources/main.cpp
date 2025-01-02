@@ -6,6 +6,8 @@
 #include <iostream>
 #include <thread>
 
+#include <logger.h>
+
 #define FRAMERATE_MAX 333.0 //Framerate high enough to not interfere with natural FPS (should wait for 3ms)
 
 namespace avs
@@ -76,6 +78,11 @@ namespace avs
 	int WebCameraBase_Input::Init()
 	{
 		read_inputs();
+		
+		#ifdef LOG_DEBUG
+			setLogLevel(2); //Debug
+		#endif
+
 		get_or_make_device();
 		if (!m_camera->is_running())
 			m_camera->start_acquisition();
