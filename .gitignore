@@ -49,6 +49,11 @@ bld/
 [Ll]ogs/
 
 .vs/
+.vscode/
+
+cmake_install.cmake
+compile_commands.json
+Makefile
 
 *.dllso
 

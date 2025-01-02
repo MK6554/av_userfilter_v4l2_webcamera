@@ -75,10 +75,10 @@
                         <Slider
                             InitialValue="30"
                             IsVisible="{Binding @con_d833905b_1ce8_45f8_963b_201c5af28b0b}"
-                            Maximum="0"
+                            Maximum="200"
                             Minimum="1"
                             Name="slider1"
-                            Step="5" />
+                            Step="1" />
                     </TablePanel>
                     <TextBlock
                         InitialText="60 ms"
