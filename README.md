@@ -1,7 +1,7 @@
 ## Getting Started
 WebCamera filter implementation for Zebra Aurora Vision Studio
 
-This filter adds mising WebCamera filter for linux.
+This filter adds missing WebCamera filter for linux.
 The implementation is based on V4L Library (linux/videodev2).
 
 ### Prerequisites
