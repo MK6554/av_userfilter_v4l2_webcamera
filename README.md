@@ -10,6 +10,12 @@ also v4l is mandatory, but more than likely is already on on your linux machine.
 Compiling the filter requires Linux based operating system with GNU gcc compiler installed and CMake. 
 Having Aurora™ Vision Studio [Runtime](https://www.adaptive-vision.com/en/user_area/download/) downloaded is also mandatory for header files.
 
+CMake installation on Ubuntu
+```bash
+# Update the package list and install build-essential and cmake
+sudo apt update && sudo apt install -y build-essential cmake
+```
+
 ### Usage
 1. Clone this repository
    ```sh
