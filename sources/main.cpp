@@ -10,7 +10,7 @@
 
 namespace avs
 {
-#define THROW_NOT_CONNECTED throw atl::IoError("Attempted to reuse a device that does not exist.")
+	#define THROW_NOT_CONNECTED throw atl::IoError("Attempted to reuse a device that does not exist.")
 
 	void WebCameraBase::disconnect()
 	{
@@ -45,6 +45,9 @@ namespace avs
 		}
 		m_camera = std::make_shared<WebCamera>(m_camera_index, inWidth, inHeight,
 											   inFps, inExposure);
+
+	
+
 		mng->add_device(m_camera);
 	}
 

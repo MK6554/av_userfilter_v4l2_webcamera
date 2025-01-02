@@ -262,11 +262,11 @@ int V4l2Device::configureExposureMode(int fd, V4l2ExposureMode exposure_mode)
 	return 0;
 };
 
-int V4l2Device::setExposureTime(int time)
+int V4l2Device::setExposureTime(int time_ms)
 {
 	struct v4l2_control ctrl;
 	ctrl.id = V4L2_CID_EXPOSURE_ABSOLUTE;
-	ctrl.value = time;
+	ctrl.value = time_ms * 10; // 30ms = 300
 
 	LOG(INFO) << "Setting ExposureTime: " << time;
 
