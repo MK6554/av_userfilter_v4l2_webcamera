@@ -19,7 +19,7 @@ sudo apt update && sudo apt install -y build-essential cmake
    ```sh
    git clone https://github.com/MK6554/TestUserFilter.git
    ```
-2. Go to CMakeLists.txt file
+2. Go to [CMakeLists.txt](CMakeLists.txt) file
    ```sh
    gedit CMakeLists.txt
    ```
