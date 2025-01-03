@@ -75,7 +75,9 @@ typedef enum {EMERG  = 0,
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+
 extern int LogLevel;
+
 inline std::string getLevel(const char* level) {
 	std::stringstream ss;
 	ss << "[" << level << "]";
@@ -94,18 +96,56 @@ inline int getLogLevel() {
 }
 
 inline void setLogLevel(int verbose) {
-	switch (verbose)
-	{
-			case 2: LogLevel=DEBUG; break;
-			case 1: LogLevel=INFO; break;
-			default: LogLevel=NOTICE; break;
-	}
+	LogLevel=verbose;
+
+	//switch (verbose)
+	//{
+	//		case 2: LogLevel=DEBUG; break;
+	//		case 1: LogLevel=INFO; break;
+	//		default: LogLevel=NOTICE; break;
+	//}
 }
 
-inline void initLogger(int verbose)
+inline void initLogger(PriorityLevel verbose)
 {
+	std::cout << "log level: ";
+
+	switch (verbose) {
+        case 0:
+            std::cout << getLevel("EMERG/FATAL");
+			break;
+        case 100:
+			std::cout << getLevel("ALERT");
+			break;
+        case 200:
+            std::cout << getLevel("CRIT");
+			break;
+        case 300:
+            std::cout << getLevel("ERROR");
+			break;
+        case 400:
+            std::cout << getLevel("WARN");
+			break;
+        case 500:
+            std::cout << getLevel("NOTICE");
+			break;
+        case 600:
+            std::cout << getLevel("INFO");
+			break;
+        case 700:
+            std::cout << getLevel("DEBUG");
+			break;
+        case 800:
+            std::cout << getLevel("NOTSET");
+			break;
+        default:
+            std::cout << getLevel("UNKNOWN");
+			break;
+    }
+
+	std::cout << std::flush;
+
 	setLogLevel(verbose);
-	std::cout << "log level:" << LogLevel << std::endl;
 }
 
 #endif

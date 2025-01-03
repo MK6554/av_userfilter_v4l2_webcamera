@@ -47,9 +47,6 @@ namespace avs
 		}
 		m_camera = std::make_shared<WebCamera>(m_camera_index, inWidth, inHeight,
 											   inFps, inExposure);
-
-	
-
 		mng->add_device(m_camera);
 	}
 
@@ -80,7 +77,7 @@ namespace avs
 		read_inputs();
 		
 		#ifdef LOG_DEBUG
-			setLogLevel(2); //Debug
+			initLogger(DEBUG); //Debug
 		#endif
 
 		get_or_make_device();
