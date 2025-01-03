@@ -19,6 +19,7 @@
 #include "log4cpp/FileAppender.hh"
 #include "log4cpp/PatternLayout.hh"
 
+
 #define LOG(__level)  log4cpp::Category::getRoot() << log4cpp::Priority::__level << __FILENAME__ << ":" << __LINE__ << "\n\t" 
 
 
@@ -85,8 +86,8 @@ inline std::string getFilename(const char* filename, int line) {
 	ss << "(" << filename << ":" << line << ")";
 	return ss.str();
 }
-#define LOG(__level) if (__level<=LogLevel) std::cout << "\n" <<  std::setw(8) << std::left << getLevel(#__level) << " " << std::setw(30) << std::left << getFilename(__FILENAME__, __LINE__) << "\t" 
 
+#define LOG(__level) if (__level<=LogLevel) std::cout << "\n" <<  std::setw(8) << std::left << getLevel(#__level) << " " << std::setw(30) << std::left << getFilename(__FILENAME__, __LINE__) << "\t"
 
 inline int getLogLevel() {
 	return LogLevel;

@@ -46,7 +46,7 @@ V4l2MmapDevice::~V4l2MmapDevice()
 
 bool V4l2MmapDevice::start() 
 {
-	LOG(INFO) << "Device " << m_params.m_devName;
+	LOG(DEBUG) << "Starting Device " << m_params.m_devName;
 
 	bool success = true;
 	struct v4l2_requestbuffers req;
@@ -59,7 +59,7 @@ bool V4l2MmapDevice::start()
 	{
 		if (EINVAL == errno) 
 		{
-			LOG(ERROR) << "Device " << m_params.m_devName << " does not support memory mapping";
+			LOG(ERROR) << "Device " << m_params.m_devName << " does not support memory mapping" << std::flush;
 			success = false;
 		} 
 		else 
@@ -70,13 +70,12 @@ bool V4l2MmapDevice::start()
 	}
 	else
 	{
-		LOG(INFO) << "Device " << m_params.m_devName << " buffer number:" << req.count;
+		LOG(DEBUG) << "Device " << m_params.m_devName << " buffer number:" << req.count << std::flush;
 		
 		// allocate buffers
 		memset(&m_buffer,0, sizeof(m_buffer));
 		for (n_buffers = 0; n_buffers < req.count; ++n_buffers) 
-		{
-			struct v4l2_buffer buf;
+		{			struct v4l2_buffer buf;
 			memset (&buf, 0, sizeof(buf));
 			buf.type        = m_deviceType;
 			buf.memory      = V4L2_MEMORY_MMAP;
@@ -89,7 +88,9 @@ bool V4l2MmapDevice::start()
 			}
 			else
 			{
-				LOG(INFO) << "Device " << m_params.m_devName << " buffer idx:" << n_buffers << " size:" << buf.length << " offset:" << buf.m.offset;
+				LOG(DEBUG) << "Device " << m_params.m_devName << " buffer idx:" << n_buffers << " size:" << buf.length << " offset:" << buf.m.offset << std::flush;
+				
+
 				m_buffer[n_buffers].length = buf.length;
 				if (!m_buffer[n_buffers].length) {
 					m_buffer[n_buffers].length = buf.bytesused;
@@ -138,7 +139,7 @@ bool V4l2MmapDevice::start()
 
 bool V4l2MmapDevice::stop() 
 {
-	LOG(INFO) << "Device " << m_params.m_devName;
+	LOG(DEBUG) << "Stoping Device " << m_params.m_devName << std::flush;
 
 	bool success = true;
 	
@@ -200,7 +201,7 @@ size_t V4l2MmapDevice::readInternal(char* buffer, size_t bufferSize)
 			if (size > bufferSize)
 			{
 				size = bufferSize;
-				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << bufferSize << " needed:" << buf.bytesused;
+				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << bufferSize << " needed:" << buf.bytesused << std::flush;
 			}
 			memcpy(buffer, m_buffer[buf.index].start, size);
 			
@@ -235,7 +236,7 @@ size_t V4l2MmapDevice::writeInternal(char* buffer, size_t bufferSize)
 			size = bufferSize;
 			if (size > buf.length)
 			{
-				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << buf.length << " needed:" << size;
+				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << buf.length << " needed:" << size << std::flush;;
 				size = buf.length;
 			}
 			memcpy(m_buffer[buf.index].start, buffer, size);
@@ -282,7 +283,7 @@ size_t V4l2MmapDevice::writePartialInternal(char* buffer, size_t bufferSize)
 			new_size = m_partialWriteBuf.bytesused + bufferSize;
 			if (new_size > m_partialWriteBuf.length)
 			{
-				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << m_partialWriteBuf.length << " needed:" << new_size;
+				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << m_partialWriteBuf.length << " needed:" << new_size << std::flush;
 				new_size = m_partialWriteBuf.length;
 			}
 			size = new_size - m_partialWriteBuf.bytesused;

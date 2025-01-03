@@ -67,7 +67,7 @@ void V4l2Device::queryFormat()
 		m_height     = fmt.fmt.pix.height;
 		m_bufferSize = fmt.fmt.pix.sizeimage;
 
-		LOG(DEBUG) << m_params.m_devName << ":" << fourcc(m_format) << " size:" << m_width << "x" << m_height << " bufferSize:" << m_bufferSize;
+		LOG(DEBUG) << m_params.m_devName << ":" << fourcc(m_format) << " size:" << m_width << "x" << m_height << " bufferSize:" << m_bufferSize << std::flush;
 	}
 }
 
@@ -77,7 +77,7 @@ bool V4l2Device::init(unsigned int mandatoryCapabilities)
 	struct stat sb;
 	if ( (stat(m_params.m_devName.c_str(), &sb)==0) && ((sb.st_mode & S_IFMT) == S_IFCHR) )
 		if (initdevice(m_params.m_devName.c_str(), mandatoryCapabilities) == -1)
-			LOG(ERROR) << "Cannot init device:" << m_params.m_devName;
+			LOG(ERROR) << "Cannot init device:" << m_params.m_devName << std::flush;
 	else
 		// open a normal file
 		m_fd = open(m_params.m_devName.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
@@ -91,7 +91,7 @@ int V4l2Device::initdevice(const char *dev_name, unsigned int mandatoryCapabilit
 	m_fd = open(dev_name,  m_params.m_openFlags);
 	if (m_fd < 0) 
 	{
-		LOG(ERROR) << "Cannot open device:" << m_params.m_devName << " " << strerror(errno);
+		LOG(ERROR) << "Cannot open device:" << m_params.m_devName << " " << strerror(errno) << std::flush;
 		this->close();
 		return -1;
 	}
@@ -127,22 +127,22 @@ int V4l2Device::checkCapabilities(int fd, unsigned int mandatoryCapabilities)
 	memset(&(cap), 0, sizeof(cap));
 	if (-1 == ioctl(fd, VIDIOC_QUERYCAP, &cap)) 
 	{
-		LOG(ERROR) << "Cannot get capabilities for device:" << m_params.m_devName << " " << strerror(errno);
+		LOG(ERROR) << "Cannot get capabilities for device:" << m_params.m_devName << " " << strerror(errno) << std::flush;
 		return -1;
 	}
-	LOG(INFO) << "driver:" << cap.driver << " capabilities:" << std::hex << cap.capabilities <<  " mandatory:" << mandatoryCapabilities << std::dec;
+	LOG(DEBUG) << "driver:" << cap.driver << " capabilities:" << std::hex << cap.capabilities <<  " mandatory:" << mandatoryCapabilities << std::dec << std::flush;
 		
-	if ((cap.capabilities & V4L2_CAP_VIDEO_OUTPUT))  LOG(DEBUG) << m_params.m_devName << " support output";
-	if ((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) LOG(DEBUG) << m_params.m_devName << " support capture";
+	if ((cap.capabilities & V4L2_CAP_VIDEO_OUTPUT))  LOG(DEBUG) << m_params.m_devName << " support output" << std::flush;
+	if ((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) LOG(DEBUG) << m_params.m_devName << " support capture" << std::flush;
 
-	if ((cap.capabilities & V4L2_CAP_READWRITE))     LOG(DEBUG) << m_params.m_devName << " support read/write";
-	if ((cap.capabilities & V4L2_CAP_STREAMING))     LOG(DEBUG) << m_params.m_devName << " support streaming";
+	if ((cap.capabilities & V4L2_CAP_READWRITE))     LOG(DEBUG) << m_params.m_devName << " support read/write" << std::flush;
+	if ((cap.capabilities & V4L2_CAP_STREAMING))     LOG(DEBUG) << m_params.m_devName << " support streaming" << std::flush;
 
-	if ((cap.capabilities & V4L2_CAP_TIMEPERFRAME))  LOG(DEBUG) << m_params.m_devName << " support timeperframe"; 
+	if ((cap.capabilities & V4L2_CAP_TIMEPERFRAME))  LOG(DEBUG) << m_params.m_devName << " support timeperframe" << std::flush;
 	
 	if ( (cap.capabilities & mandatoryCapabilities) != mandatoryCapabilities )
 	{
-		LOG(ERROR) << "Mandatory capability not available for device:" << m_params.m_devName;
+		LOG(ERROR) << "Mandatory capability not available for device:" << m_params.m_devName << std::flush;
 		return -1;
 	}
 	
@@ -188,9 +188,12 @@ int V4l2Device::configureFormat(int fd, unsigned int format, unsigned int width,
 	struct v4l2_format   fmt;			
 	memset(&(fmt), 0, sizeof(fmt));
 	fmt.type                = m_deviceType;
+
+	LOG(DEBUG) << "Configuring camera format" << std::flush;
+
 	if (ioctl(m_fd,VIDIOC_G_FMT,&fmt) == -1)
 	{
-		LOG(ERROR) << m_params.m_devName << ": Cannot get format " << strerror(errno);
+		LOG(ERROR) << m_params.m_devName << ": Cannot get format " << strerror(errno) << std::flush;
 		return -1;
 	}
 	if (width != 0) {
@@ -205,19 +208,19 @@ int V4l2Device::configureFormat(int fd, unsigned int format, unsigned int width,
 	
 	if (ioctl(fd, VIDIOC_S_FMT, &fmt) == -1)
 	{
-		LOG(ERROR) << m_params.m_devName << ": Cannot set format:" << fourcc(format) << " " << strerror(errno);
+		LOG(ERROR) << m_params.m_devName << ": Cannot set format:" << fourcc(format) << " " << strerror(errno) << std::flush;
 		
 		return -1;
 	}			
 	if (fmt.fmt.pix.pixelformat != format) 
 	{
-		LOG(ERROR) << m_params.m_devName << ": Cannot set pixelformat to:" << fourcc(format) << " format is:" << fourcc(fmt.fmt.pix.pixelformat);
+		LOG(ERROR) << m_params.m_devName << ": Cannot set pixelformat to:" << fourcc(format) << " format is:" << fourcc(fmt.fmt.pix.pixelformat) << std::flush;
 		
 		return -1;
 	}
 	if ((fmt.fmt.pix.width != width) || (fmt.fmt.pix.height != height))
 	{
-		LOG(WARN) << m_params.m_devName << ": Cannot set size to:" << width << "x" << height << " size is:"  << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height;
+		LOG(WARN) << m_params.m_devName << ": Cannot set size to:" << width << "x" << height << " size is:"  << fmt.fmt.pix.width << "x" << fmt.fmt.pix.height << std::flush;
 	}
 	
 	m_format     = fmt.fmt.pix.pixelformat;
@@ -225,7 +228,7 @@ int V4l2Device::configureFormat(int fd, unsigned int format, unsigned int width,
 	m_height     = fmt.fmt.pix.height;		
 	m_bufferSize = fmt.fmt.pix.sizeimage;
 	
-	LOG(INFO) << m_params.m_devName << ":" << fourcc(m_format) << " size:" << m_width << "x" << m_height << " bufferSize:" << m_bufferSize;
+	LOG(DEBUG) << m_params.m_devName << ":" << fourcc(m_format) << " size:" << m_width << "x" << m_height << " bufferSize:" << m_bufferSize << std::flush;
 	
 	return 0;
 }
@@ -239,12 +242,15 @@ int V4l2Device::configureExposureMode(int fd, V4l2ExposureMode exposure_mode)
 	{
 	case V4l2ExposureMode::Auto:
 		control.value = V4L2_EXPOSURE_APERTURE_PRIORITY; //Fuck zGPT
+
+		LOG(DEBUG) << "Setting exposure_mode: V4L2_EXPOSURE_APERTURE_PRIORITY" << std::flush;
+
 		if(ioctl(fd, VIDIOC_S_CTRL, &control) == -1)
 		{
 			if (errno != EINVAL)
-				LOG(WARN) << "Quering exposure auto control failed"; 
+				LOG(WARN) << "Quering exposure auto control failed" << std::flush;
 			else
-				LOG(WARN) << "Exposure auto control not supported"; 
+				LOG(WARN) << "Exposure auto control not supported" << std::flush;
 
 			return -1;
 		}
@@ -252,9 +258,12 @@ int V4l2Device::configureExposureMode(int fd, V4l2ExposureMode exposure_mode)
 	
 	case V4l2ExposureMode::Manual:
 		control.value = V4L2_EXPOSURE_MANUAL;
+
+		LOG(DEBUG) << "Setting exposure_mode: V4L2_EXPOSURE_MANUAL" << std::flush;
+
 		if(ioctl(fd, VIDIOC_S_CTRL, &control) == -1)
 		{
-			LOG(WARN) << "Exposure control to manual mode failed"; 
+			LOG(WARN) << "Exposure control to manual mode failed" << std::flush; 
 			return -1;
 		}
 		break;
@@ -268,11 +277,11 @@ int V4l2Device::setExposureTime(int time_ms)
 	ctrl.id = V4L2_CID_EXPOSURE_ABSOLUTE;
 	ctrl.value = time_ms * 10; // 30ms = 300
 
-	LOG(INFO) << "Setting exposure_time_absolute: " << ctrl.value << " (" << time_ms << "ms)";
+	LOG(DEBUG) << "Setting exposure_time_absolute: " << ctrl.value << " (" << time_ms << "ms)" << std::flush;
 
 	if (ioctl(getFd(), VIDIOC_S_CTRL, &ctrl) == -1)
 	{
-		LOG(WARN) << "Setting exposure time failed"; 
+		LOG(WARN) << "Setting exposure time failed" << std::flush; 
 		return -1;
 	}
 
@@ -282,7 +291,7 @@ int V4l2Device::setExposureTime(int time_ms)
 
 int V4l2Device::setFPS(int fps)
 {
-	LOG(INFO) << "Setting FPS: " << fps;
+	LOG(DEBUG) << "Setting FPS: " << fps << std::flush;
 
 	if (fps!=0)
 	{
@@ -294,13 +303,12 @@ int V4l2Device::setFPS(int fps)
 		param.parm.capture.timeperframe.denominator = fps;
 		
 		if (ioctl(getFd(), VIDIOC_S_PARM, &param) == -1){
-			LOG(WARN) << "Cannot update device FPS:";
-			LOG(WARN) << "Cannot set param for device:" << m_params.m_devName << " " << strerror(errno);
+			LOG(WARN) << "Cannot update device FPS:" << std::flush;
+			LOG(WARN) << "Cannot set param for device:" << m_params.m_devName << " " << strerror(errno) << std::flush;
 			return -1;
 		}
 
-		LOG(INFO) << "Updated device FPS timeperframe.numerator " << param.parm.capture.timeperframe.numerator << " timeperframe.denominator " << param.parm.capture.timeperframe.denominator;
-		//LOG(INFO) << "nbBuffer:" << param.parm.capture.readbuffers;
+		LOG(DEBUG) << "Updated device FPS timeperframe.numerator " << param.parm.capture.timeperframe.numerator << " timeperframe.denominator " << param.parm.capture.timeperframe.denominator << std::flush;
 	}
 	return 0;
 }
