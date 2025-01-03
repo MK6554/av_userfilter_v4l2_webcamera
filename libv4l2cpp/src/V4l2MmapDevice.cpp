@@ -46,7 +46,7 @@ V4l2MmapDevice::~V4l2MmapDevice()
 
 bool V4l2MmapDevice::start() 
 {
-	LOG(DEBUG) << "Starting Device " << m_params.m_devName;
+	LOG(DEBUG) << "Starting Device " << m_params.m_devName << std::flush;
 
 	bool success = true;
 	struct v4l2_requestbuffers req;
@@ -236,7 +236,7 @@ size_t V4l2MmapDevice::writeInternal(char* buffer, size_t bufferSize)
 			size = bufferSize;
 			if (size > buf.length)
 			{
-				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << buf.length << " needed:" << size << std::flush;;
+				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << buf.length << " needed:" << size << std::flush;
 				size = buf.length;
 			}
 			memcpy(m_buffer[buf.index].start, buffer, size);
