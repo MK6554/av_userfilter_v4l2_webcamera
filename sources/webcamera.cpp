@@ -121,13 +121,18 @@ void WebCamera::set_max_framerate(int new_max) {
 }
 
 void WebCamera::set_exposure(long time_ms) {  
-  this->m_exposure = time_ms;
-  
-  if (time_ms == -1)
-    this->video_capture->setExposureMode(V4l2ExposureMode::Auto);
-  else{
-    this->video_capture->setExposureMode(V4l2ExposureMode::Manual);
-    this->video_capture->setExposureTime(time_ms);
+  //std::cout << this->m_exposure << std::endl;
+  if (this->m_exposure != time_ms)
+  {
+    if (time_ms == -1)
+      this->video_capture->setExposureMode(V4l2ExposureMode::Auto);
+    else{
+      if (this->m_exposure == -1) // this if is unnecessary
+        this->video_capture->setExposureMode(V4l2ExposureMode::Manual);
+      this->video_capture->setExposureTime(time_ms);
+    }
+
+    this->m_exposure = time_ms;
   }
 }
 
