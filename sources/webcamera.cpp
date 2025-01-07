@@ -15,19 +15,13 @@
 #include <unistd.h>
 #define MAX_DIM 65535
 
-void sleep(int time_ms) {
+void sleep(int time_ms) 
+{
   std::this_thread::sleep_for(std::chrono::milliseconds(time_ms));
 }
 
-void wait(TIMEPOINT from, double max_freq_hz) {
-  if (max_freq_hz < 0)
-    return;
-  
-  auto min_period = std::chrono::seconds(1) / max_freq_hz;
-  std::this_thread::sleep_until(min_period + from);
-}
-
-void WebCamera::update_camera_external_timer() { 
+void WebCamera::update_camera_external_timer() 
+{ 
   // Time per frame in usec
   double one_dev_by_fps = 1. / this->m_max_framerate;
   one_dev_by_fps = std::floor(one_dev_by_fps * 10000.0) / 10000.0;
@@ -37,7 +31,8 @@ void WebCamera::update_camera_external_timer() {
   this->tv.tv_sec  = 0;
 }
 
-void WebCamera::start_acquisition() {
+void WebCamera::start_acquisition() 
+{
   m_running = true;
 
   auto width = m_width < 0 ? MAX_DIM : m_width;
@@ -50,7 +45,8 @@ void WebCamera::start_acquisition() {
   V4L2DeviceParameters param(in_devname, V4L2_PIX_FMT_MJPG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
   this->video_capture = V4l2Capture::create(param);
 
-  if(!this->video_capture) {
+  if(this->video_capture->isReady() == -1) 
+  {
     this->m_running = false;
 
     //In case when we canot init captue we shuld crash
@@ -69,13 +65,15 @@ void WebCamera::start_acquisition() {
   m_cap_thread = std::thread(&WebCamera::captureLoop, this);
 }
 
-bool WebCamera::grab_image(avl::Image &image) {
+bool WebCamera::grab_image(avl::Image &image) 
+{
   if (m_queue.has_enqueued())
     return m_queue.pop(image);
   return false;
 }
 
-void WebCamera::close_acquisition() {
+void WebCamera::close_acquisition() 
+{
   m_running = false;
   if (m_cap_thread.joinable())
     m_cap_thread.join();
@@ -84,13 +82,15 @@ void WebCamera::close_acquisition() {
   delete this->buffer; //releasing image buffer
 }
 
-bool WebCamera::can_grab() const {
+bool WebCamera::can_grab() const 
+{
   return m_queue.has_enqueued(); 
 }
 
-void WebCamera::set_max_framerate(int new_max) {
-  if (this->m_max_framerate != new_max) {
-
+void WebCamera::set_max_framerate(int new_max) 
+{
+  if (this->m_max_framerate != new_max) 
+  {
     this->m_max_framerate = new_max;
 
     // Stoping capture thread
@@ -120,13 +120,15 @@ void WebCamera::set_max_framerate(int new_max) {
   }
 }
 
-void WebCamera::set_exposure(long time_ms) {  
+void WebCamera::set_exposure(long time_ms) 
+{  
   //std::cout << this->m_exposure << std::endl;
   if (this->m_exposure != time_ms)
   {
     if (time_ms == -1)
       this->video_capture->setExposureMode(V4l2ExposureMode::Auto);
-    else{
+    else
+    {
       if (this->m_exposure == -1) // this if is unnecessary
         this->video_capture->setExposureMode(V4l2ExposureMode::Manual);
       this->video_capture->setExposureTime(time_ms);
@@ -147,7 +149,8 @@ WebCamera::~WebCamera() { close_acquisition(); }
 void WebCamera::captureLoop() 
 {
   while (m_running) {
-    if (video_capture->isReadable(&tv)) {
+    if (video_capture->isReadable(&tv)) 
+    {
       int rsize = video_capture->read(this->buffer, video_capture->getBufferSize());
 
       if (rsize == -1)
@@ -174,9 +177,11 @@ void WebCamera::captureLoop()
   }
 }
 
-void list_supported_framerates(const std::string &devicePath) {
+void list_supported_framerates(const std::string &devicePath) 
+{
   int fd = open(devicePath.c_str(), O_RDWR);
-  if (fd == -1) {
+  if (fd == -1) 
+  {
     std::cerr << "Error: Cannot open device " << devicePath << std::endl;
     return;
   }
@@ -194,7 +199,8 @@ void list_supported_framerates(const std::string &devicePath) {
     for (frameSize.index = 0;
          ioctl(fd, VIDIOC_ENUM_FRAMESIZES, &frameSize) == 0;
          frameSize.index++) {
-      if (frameSize.type == V4L2_FRMSIZE_TYPE_DISCRETE) {
+      if (frameSize.type == V4L2_FRMSIZE_TYPE_DISCRETE) 
+      {
         std::cout << "  Resolution: " << frameSize.discrete.width << "x"
                   << frameSize.discrete.height << std::endl;
 
@@ -204,7 +210,8 @@ void list_supported_framerates(const std::string &devicePath) {
         for (frameInterval.index = 0;
              ioctl(fd, VIDIOC_ENUM_FRAMEINTERVALS, &frameInterval) == 0;
              frameInterval.index++) {
-          if (frameInterval.type == V4L2_FRMIVAL_TYPE_DISCRETE) {
+          if (frameInterval.type == V4L2_FRMIVAL_TYPE_DISCRETE) 
+          {
             std::cout << "    Frame Rate: "
                       << (float)frameInterval.discrete.denominator /
                              frameInterval.discrete.numerator
@@ -214,6 +221,5 @@ void list_supported_framerates(const std::string &devicePath) {
       }
     }
   }
-
   close(fd);
 }

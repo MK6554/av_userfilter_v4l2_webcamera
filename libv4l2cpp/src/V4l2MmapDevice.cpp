@@ -32,9 +32,8 @@ bool V4l2MmapDevice::init(unsigned int mandatoryCapabilities)
 {
 	bool ret = V4l2Device::init(mandatoryCapabilities);
 	if (ret)
-	{
 		ret = this->start();
-	}
+	
 	return ret;
 }
 
@@ -42,7 +41,6 @@ V4l2MmapDevice::~V4l2MmapDevice()
 {
 	this->stop();
 }
-
 
 bool V4l2MmapDevice::start() 
 {
@@ -90,7 +88,6 @@ bool V4l2MmapDevice::start()
 			{
 				LOG(DEBUG) << "Device " << m_params.m_devName << " buffer idx:" << n_buffers << " size:" << buf.length << " offset:" << buf.m.offset << std::flush;
 				
-
 				m_buffer[n_buffers].length = buf.length;
 				if (!m_buffer[n_buffers].length) {
 					m_buffer[n_buffers].length = buf.bytesused;
@@ -281,7 +278,7 @@ size_t V4l2MmapDevice::writePartialInternal(char* buffer, size_t bufferSize)
 		if (m_partialWriteBuf.index < n_buffers)
 		{
 			new_size = m_partialWriteBuf.bytesused + bufferSize;
-			if (new_size > m_partialWriteBuf.length)
+			if (new_size > m_partialWriteBuf.length) 
 			{
 				LOG(WARN) << "Device " << m_params.m_devName << " buffer truncated available:" << m_partialWriteBuf.length << " needed:" << new_size << std::flush;
 				new_size = m_partialWriteBuf.length;
@@ -301,17 +298,20 @@ bool V4l2MmapDevice::endPartialWrite()
 {
 	if (!m_partialWriteInProgress)
 		return false;
-	if (n_buffers <= 0)
+
+	if (n_buffers <= 0) 
 	{
 		m_partialWriteInProgress = false; // abort partial write
 		return true;
 	}
-	if (-1 == ioctl(m_fd, VIDIOC_QBUF, &m_partialWriteBuf))
+
+	if (-1 == ioctl(m_fd, VIDIOC_QBUF, &m_partialWriteBuf)) 
 	{
 		perror("VIDIOC_QBUF");
 		m_partialWriteInProgress = false; // abort partial write
 		return true;
 	}
+
 	m_partialWriteInProgress = false;
 
 	return true;
