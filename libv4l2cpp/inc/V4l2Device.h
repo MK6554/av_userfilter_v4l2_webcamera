@@ -48,11 +48,11 @@ struct V4L2DeviceParameters
 		m_devName(devname), m_formatList(formatList), m_width(width), m_height(height), m_fps(fps), m_iotype(ioType), m_openFlags(openFlags), m_exposure_mode(exposure_mode) {}
 
 	V4L2DeviceParameters(const char* devname, unsigned int format, unsigned int width, unsigned int height, int fps, V4l2IoType ioType = IOTYPE_MMAP, int openFlags = O_RDWR | O_NONBLOCK, V4l2ExposureMode exposure_mode = V4l2ExposureMode::Auto) : 
-		m_devName(devname), m_width(width), m_height(height), m_fps(fps), m_iotype(ioType), m_openFlags(openFlags), m_exposure_mode(exposure_mode) {
-			if (format) {
+		m_devName(devname), m_width(width), m_height(height), m_fps(fps), m_iotype(ioType), m_openFlags(openFlags), m_exposure_mode(exposure_mode) 
+		{
+			if (format)
 				m_formatList.push_back(format);
-			}
-	}
+		}
 		
 	std::string m_devName;
 
@@ -110,13 +110,15 @@ class V4l2Device
 		int          getFd()         { return m_fd;         }
 		void         queryFormat();
 			
-		int setFormat(unsigned int format, unsigned int width, unsigned int height) {
+		int setFormat(unsigned int format, unsigned int width, unsigned int height) 
+		{
 			return this->configureFormat(m_fd, format, width, height);
 		}
 
 		int setExposureTime(int time);
 
-		int setFps(int fps) {
+		int setFps(int fps) 
+		{
 			return this->setFPS(fps);
 		}	
 
