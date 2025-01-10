@@ -5,5 +5,5 @@ then
     ./clear_build.sh
 fi
 
-cmake ./
-make
+cmake .
+cmake --build . --parallel 8

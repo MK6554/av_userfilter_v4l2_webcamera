@@ -1,3 +1,5 @@
 #!/bin/bash
-
-make clear
+if [ -e Makefile ]
+then
+    make clear
+fi

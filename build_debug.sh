@@ -6,4 +6,4 @@ then
 fi
 
 cmake -DLOG_DEBUG=ON ./
-make
+cmake --build . --parallel 8
