@@ -6,4 +6,4 @@ then
 fi
 
 cmake .
-cmake --build . --parallel 8
+cmake --build . --parallel $(nproc)
