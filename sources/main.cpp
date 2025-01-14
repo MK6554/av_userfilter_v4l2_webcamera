@@ -182,7 +182,7 @@ namespace avs
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
 		if (!m_camera)
-			INVOKE_ERROR;
+			return INVOKE_ERROR;
 
 		m_camera->grab_image(transImage);
 		outImage = transImage;
