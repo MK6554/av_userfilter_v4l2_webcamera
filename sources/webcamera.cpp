@@ -44,8 +44,8 @@ void WebCamera::start_acquisition()
   char in_devname[50];// = "buffer for path /dev/video%d"
   sprintf(in_devname, "/dev/video%d", m_camera_index);
 
-  struct stat buffer;
-  if (stat(in_devname, &buffer) != 0) {
+  struct stat buff;
+  if (stat(in_devname, &buff) != 0) {
     std::cout << "Camera is not conected, " <<  in_devname << " is missing" << std::endl;
     throw new atl::IoError("Camera is not connected");
     return;
