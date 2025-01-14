@@ -12,8 +12,6 @@
 
 namespace avs
 {
-	#define THROW_NOT_CONNECTED throw atl::IoError("Attempted to reuse a device that does not exist.")
-
 	void WebCameraBase::disconnect()
 	{
 		auto dev = WebCameraManager::instance()->get_device(m_camera_index);
@@ -144,7 +142,7 @@ namespace avs
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
 		if (!m_camera)
-			THROW_NOT_CONNECTED;
+			return INVOKE_ERROR;
 
 		m_camera->grab_image(outImage);
 
@@ -184,7 +182,7 @@ namespace avs
 			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		}
 		if (!m_camera)
-			THROW_NOT_CONNECTED;
+			INVOKE_ERROR;
 
 		m_camera->grab_image(transImage);
 		outImage = transImage;
@@ -226,7 +224,7 @@ namespace avs
 
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-			THROW_NOT_CONNECTED;
+			return INVOKE_ERROR;
 		
 		//auto res = cam->set_property(id, val);
 		//WriteOutput(L"outSuccess", res);
@@ -251,7 +249,7 @@ namespace avs
 		ReadInput(L"inFpsLimit", val);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-			THROW_NOT_CONNECTED;
+			return INVOKE_END;
 		
 		cam->set_max_framerate(val.GetValueOr(FRAMERATE_MAX));
 		return INVOKE_NORMAL;
@@ -274,7 +272,7 @@ namespace avs
 		ReadInput(L"inExposure", val);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-			THROW_NOT_CONNECTED;
+			return INVOKE_ERROR;
 
 		//std::cout << "WebCameraSetExposure " << val.GetValueOr(-1) << std::endl;
 
@@ -300,7 +298,7 @@ namespace avs
 		ReadInput(L"inParameterId", id);
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-			THROW_NOT_CONNECTED;
+			return INVOKE_ERROR;
 
 		switch (id)
 		{
@@ -333,7 +331,7 @@ namespace avs
 		read_inputs();
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-			THROW_NOT_CONNECTED;
+			return INVOKE_ERROR;
 		
 		WriteOutput(L"outFpsLimit", cam->max_framerate());
 		return INVOKE_NORMAL;
@@ -354,7 +352,7 @@ namespace avs
 		read_inputs();
 		auto cam = WebCameraManager::instance()->get_device(m_camera_index);
 		if (!cam)
-			THROW_NOT_CONNECTED;
+			return INVOKE_ERROR;
 		
 		WriteOutput(L"outExposure", (int)cam->exposure());
 		return INVOKE_NORMAL;
