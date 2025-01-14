@@ -82,8 +82,16 @@ namespace avs
 
 		get_or_make_device();
 		if (!m_camera->is_running())
-			m_camera->start_acquisition();
-		
+			try
+			{
+				m_camera->start_acquisition();
+			}
+			catch(const atl::IoError& e)
+			{
+				std::cerr << e.Message() << '\n';
+				return INIT_PROBLEM;
+			}
+			
 		return INIT_OK;
 	}
 
