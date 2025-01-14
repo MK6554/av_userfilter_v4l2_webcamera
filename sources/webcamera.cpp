@@ -11,6 +11,8 @@
 
 #include <string>
 #include <sys/ioctl.h>
+#include <sys/stat.h>
+
 #include <thread>
 #include <unistd.h>
 #define MAX_DIM 65535
@@ -41,6 +43,13 @@ void WebCamera::start_acquisition()
   //path to camera device
   char in_devname[50];// = "buffer for path /dev/video%d"
   sprintf(in_devname, "/dev/video%d", m_camera_index);
+
+  struct stat buffer;
+  if (stat(in_devname, &buffer) != 0) {
+    std::cout << "Camera is not conected, " <<  in_devname << " is missing" << std::endl;
+    throw new atl::IoError("Camera is not connected");
+    return;
+  }
 
   V4L2DeviceParameters param(in_devname, V4L2_PIX_FMT_MJPG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
   this->video_capture = V4l2Capture::create(param);
