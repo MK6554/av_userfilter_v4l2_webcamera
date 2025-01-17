@@ -73,12 +73,12 @@
                         <CheckBox
                             Name="checkBox_Expo" />
                         <Slider
-                            InitialValue="60"
+                            InitialValue="33"
                             IsVisible="{Binding @con_d833905b_1ce8_45f8_963b_201c5af28b0b}"
                             Maximum="200"
-                            Minimum="5"
+                            Minimum="1"
                             Name="slider1"
-                            Step="5" />
+                            Step="1" />
                     </TablePanel>
                     <TextBlock
                         InitialText="60 ms"
@@ -106,9 +106,9 @@
                         <CheckBox
                             Name="checkBox_FPS" />
                         <Slider
-                            InitialValue="60"
+                            InitialValue="30"
                             IsVisible="{Binding @con_6bab60c8_9a9e_441b_93ed_befc24974805}"
-                            Maximum="200"
+                            Maximum="60"
                             Minimum="5"
                             Name="sliderFps"
                             Step="5" />

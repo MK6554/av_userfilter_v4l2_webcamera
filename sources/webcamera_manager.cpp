@@ -16,9 +16,8 @@ std::shared_ptr<WebCamera> WebCameraManager::get_device(int id)
 {
     auto found = devices.find(id);
     if (found != devices.end())
-    {
         return found->second;
-    }
+    
     return std::shared_ptr<WebCamera>(nullptr);
 }
 

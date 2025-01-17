@@ -5,11 +5,11 @@ void run_loop()
 {
   auto s = std::make_shared<WebCamera>(0, 2592 / 1, 1944 / 1, 30, 200);
   WebCameraManager::instance()->add_device(s);
+  
   auto m_camera = WebCameraManager::instance()->get_device(0);
   if (!m_camera->is_running())
-  {
     m_camera->start_acquisition();
-  }
+  
   while (true)
   {
     avl::Image img;
