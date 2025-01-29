@@ -17,7 +17,7 @@ sudo apt update && sudo apt install -y build-essential cmake
 ### Usage
 1. Clone this repository
    ```sh
-   git clone https://github.com/MK6554/TestUserFilter.git
+   git clone https://github.com/MK6554/av_userfilter_v4l2_webcamera.git
    ```
 2. Go to [CMakeLists.txt](CMakeLists.txt) file
    ```sh
@@ -33,9 +33,15 @@ sudo apt update && sudo apt install -y build-essential cmake
    sudo chmod +x build.sh
    ./build.sh
    ```
-6. After building, the filter should be ready to use, you can connect the web camera and test it.
+6. Change camera resolution in AVS project file [/avs/uf_linux.avcode](/avs/uf_linux.avcode)
    ```sh
-   /path/to/avexecutor/bin/Console this/project/path/avs/uf_linux.avproj
+   inWidth: 2320
+	inHeight: 1744
+   ```
+
+7. After building, the filter should be ready to use, you can connect the web camera and test it.
+   ```sh
+   /path/to/avexecutor/bin/Console ./avs/uf_linux.avproj
    ```
 
 Project can use full Aurora™ Vision Library insted of Lite Version from the Aurora™ Vision Studio Runtime includes, to enable full library please check this [CMakeFile](https://github.com/ErykDevZebra/EmptyAVLProject/blob/main/build/CMakeLists.txt)
