@@ -36,7 +36,7 @@ sudo apt update && sudo apt install -y build-essential cmake
 6. Change camera resolution in AVS project file [/avs/uf_linux.avcode](/avs/uf_linux.avcode)
    ```sh
    inWidth: 2320
-	inHeight: 1744
+   inHeight: 1744
    ```
 
 7. After building, the filter should be ready to use, you can connect the web camera and test it.
