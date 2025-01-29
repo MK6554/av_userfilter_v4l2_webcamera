@@ -43,6 +43,8 @@ sudo apt update && sudo apt install -y build-essential cmake
    ```sh
    /path/to/avexecutor/bin/Console ./avs/uf_linux.avproj
    ```
+8. Open a web browser and go to [localhost:9090/](localhost:9090/) You should see live feed from a camera.
+
 
 Project can use full Aurora™ Vision Library insted of Lite Version from the Aurora™ Vision Studio Runtime includes, to enable full library please check this [CMakeFile](https://github.com/ErykDevZebra/EmptyAVLProject/blob/main/build/CMakeLists.txt)
 
