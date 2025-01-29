@@ -37,7 +37,7 @@ sudo apt update && sudo apt install -y build-essential cmake
    ```sh
    /path/to/avexecutor/bin/Console ./avs/uf_linux.avproj
    ```
-6. Open a web browser and visit hosted WebHMI You should see live feed from the connected camera.
+6. Open a web browser and visit hosted WebHMI. You should see live feed from the connected camera.
    ```sh
    localhost:9090/
    ```
