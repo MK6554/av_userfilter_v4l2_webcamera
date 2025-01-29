@@ -26,7 +26,7 @@ sudo apt update && sudo apt install -y build-essential cmake
 4. Edit Zebra Aurora™ Vision Studio Runtime path
    ```sh
    #Specify the source directory
-   set(AVL_LITE_DIR  "/etc/avexecutor/")
+   set(AVEXECUTOR_DIR "/etc/avexecutor/")
    ```
 5. Open the console in directory, and run
    ```sh
