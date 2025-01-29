@@ -18,32 +18,26 @@ sudo apt update && sudo apt install -y build-essential cmake
    ```sh
    git clone https://github.com/MK6554/av_userfilter_v4l2_webcamera.git
    ```
-2. Go to [CMakeLists.txt](CMakeLists.txt) file
-   ```sh
-   gedit CMakeLists.txt
-   ```
-4. Edit Zebra Aurora™ Vision Studio Runtime path
+2. Edit [CMakeLists.txt](CMakeLists.txt) file and change Zebra Aurora™ Vision Studio Runtime path
    ```sh
    #Specify the source directory
    set(AVEXECUTOR_DIR "/etc/avexecutor/")
    ```
-5. Open the console in directory, and run
+3. Open the console in directory, and run
    ```sh
    sudo chmod +x build.sh
    ./build.sh
    ```
-6. Change camera resolution in AVS project file [/avs/uf_linux.avcode](/avs/uf_linux.avcode)
+4. Change camera resolution in AVS project file [/avs/uf_linux.avcode](/avs/uf_linux.avcode)
    ```sh
    inWidth: 2320
    inHeight: 1744
    ```
-
-7. After building, the filter should be ready to use, you can connect the web camera and test it.
+5. After building, the filter should be ready to use, you can connect the web camera and test it.
    ```sh
    /path/to/avexecutor/bin/Console ./avs/uf_linux.avproj
    ```
-   
-8. Open a web browser and visit hosted WebHMI You should see live feed from the connected camera.
+6. Open a web browser and visit hosted WebHMI You should see live feed from the connected camera.
    ```sh
    localhost:9090/
    ```
