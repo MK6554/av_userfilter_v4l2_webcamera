@@ -10,7 +10,6 @@ Having Aurora™ Vision Studio [Runtime](https://www.adaptive-vision.com/en/user
 
 CMake installation on Ubuntu
 ```bash
-# Update the package list and install build-essential and cmake
 sudo apt update && sudo apt install -y build-essential cmake
 ```
 
@@ -44,8 +43,10 @@ sudo apt update && sudo apt install -y build-essential cmake
    /path/to/avexecutor/bin/Console ./avs/uf_linux.avproj
    ```
    
-8. Open a web browser and go to [localhost:9090/](https://localhost:9090/) You should see live feed from the connected camera.
-
+8. Open a web browser and visit hosted WebHMI You should see live feed from the connected camera.
+   ```sh
+   localhost:9090/
+   ```
 
 
 Project can use full Aurora™ Vision Library insted of Lite Version from the Aurora™ Vision Studio Runtime includes, to enable full library please check this [CMakeFile](https://github.com/ErykDevZebra/EmptyAVLProject/blob/main/build/CMakeLists.txt)
