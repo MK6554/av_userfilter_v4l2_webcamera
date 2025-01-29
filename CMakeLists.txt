@@ -21,34 +21,36 @@ set(SRC_CORE
 
 option(LOG_DEBUG "Enable logging for debugging" OFF)
 
-
 # Specify the source directory
-#if(WIN32)
-#    set(AVL_LITE_DIR "$ENV{AVS_PROFESSIONAL_SDK5_5}\\")
-#    set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib\\x64\\")
-#    set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include\\")
-#    set(USER_PROPS_PATH "${AVL_LITE_DIR}props\\UserFilters_v143.props")
-#    set(SRC_PLATFORM)
-#    add_compile_definitions(PLATFORM_WINDOWS)
-#elseif(UNIX)
-    #find_package(OpenCV REQUIRED)
-    set(AVL_LITE_DIR "/etc/avexecutor/")
-    set(AVL_LITE_LIB_DIR "${AVL_LITE_DIR}lib/x86_64-linux-gnu/")
-    set(AVL_LITE_INCLUDE_DIR "${AVL_LITE_DIR}include/")
-    set(SRC_PLATFORM
-        ./sources/paraqueue.cpp
-        ./sources/webcamera.cpp
-    )
-#    add_compile_definitions(PLATFORM_UNIX)
-#endif()
+set(AVEXECUTOR_DIR "/etc/avexecutor/")
+message(STATUS "AVExecutor path: ${AVEXECUTOR_DIR}")
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64" OR CMAKE_GENERATOR_PLATFORM MATCHES "AMD64")
+	message(STATUS "Building for ${CMAKE_SYSTEM_PROCESSOR} platform")
+	set(AVL_LITE_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
+
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "i[3-6]86 " OR CMAKE_GENERATOR_PLATFORM MATCHES "x86")
+	message(STATUS "Building for ${CMAKE_SYSTEM_PROCESSOR} platform")
+	set(AVL_LITE_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu//")
+
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+	message(STATUS "Building for ${CMAKE_SYSTEM_PROCESSOR} platform")
+	set(AVL_LITE_LIB_DIR "${AVEXECUTOR_DIR}lib/aarch64-linux-gnu/")
+else()
+	message(WARNING "Unsuported platform: ${CMAKE_SYSTEM_PROCESSOR}")
+	set(AVL_LITE_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
+endif()
+
+set(AVL_LITE_LIB_DIR "${AVEXECUTOR_DIR}lib/x86_64-linux-gnu/")
+set(AVL_LITE_INCLUDE_DIR "${AVEXECUTOR_DIR}include/")
+
+set(SRC_PLATFORM
+    ./sources/paraqueue.cpp
+    ./sources/webcamera.cpp
+)
 
 set(SRC_FILES ${SRC_CORE} ${SRC_PLATFORM})
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-# Collect all .cpp files in the src directory
-# file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.cpp")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Specify the include directories for avexecutor
@@ -62,9 +64,6 @@ link_directories(${AVL_LITE_LIB_DIR})
 
 add_subdirectory("./libv4l2cpp")
 
-
-
-
 # Add the shared library target
 add_library(${UF_NAME} SHARED sources/main.cpp ${SRC_FILES})
 
@@ -73,36 +72,17 @@ if(LOG_DEBUG)
     target_compile_definitions(${UF_NAME} PRIVATE LOG_DEBUG)
 endif()
 
-#if(UNIX)
-#    add_executable(${EXE_NAME} sources/test.cpp ${SRC_FILES})
-#endif()
-
 # set_property(TARGET ${UF_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 # Link the necessary libraries
 target_link_libraries(${UF_NAME} PUBLIC
-    AVL_Lite # Assuming this is available in the specified library directory
-    UserFilters # Assuming this is available in the specified library directory
-    libv4l2cpp#  <------- linked only for UNIX
+    AVL_Lite
+    UserFilters
+    libv4l2cpp
 )
 
 # Set the output name for the shared library
 set_target_properties(${UF_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-
-#if(WIN32)
-#    # Windows-specific source files or definitions
-#    set_target_properties(${UF_NAME} PROPERTIES VS_USER_PROPS "${USER_PROPS_PATH}")
-#elseif(UNIX)
-    # Unix-like (Linux, macOS) specific source files or definitions
-    #target_link_libraries(${UF_NAME}
-    #    AVL_Lite # Assuming this is available in the specified library directory
-    #    UserFilters # Assuming this is available in the specified library directory
-    #    libv4l2cpp
-    #)
-    #set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
-    #target_link_libraries(${UF_NAME} PUBLIC ${OpenCV_LIBS})
-    #target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
-#endif()
 
 # Additional flags for compiling and linking (this is added automatically by CMake when using SHARED)
 set_target_properties(${UF_NAME} PROPERTIES
