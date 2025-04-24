@@ -47,7 +47,7 @@ void WebCamera::start_acquisition()
   struct stat buff;
   if (stat(in_devname, &buff) != 0) {
     std::cerr << "Camera is not conected, " <<  in_devname << " is missing" << std::endl;
-    throw new atl::IoError("Camera is not connected");
+    throw atl::IoError("Camera is not connected");
   }
 
   V4L2DeviceParameters param(in_devname, V4L2_PIX_FMT_MJPG, width, height, m_max_framerate, V4l2IoType::IOTYPE_MMAP, O_RDWR | O_NONBLOCK, V4l2ExposureMode::Auto);
@@ -57,9 +57,9 @@ void WebCamera::start_acquisition()
   {
     this->m_running = false;
 
-    //In case when we canot init captue we shuld crash
+    //In case when we canot init captue we should crash
     std::cerr << "Camera Not initialized, or missing" << std::endl;
-    throw new atl::IoError("Camera Not initialized, or missing");
+    throw atl::IoError("Camera Not initialized, or missing");
   }
 
   // Allocating buffer
@@ -166,7 +166,7 @@ void WebCamera::captureLoop()
           m_cap_thread.join();
 
         std::cout << "Can't read data from Camera" << std::endl;
-        throw new atl::IoError("Can't read data from Camera");
+        throw atl::IoError("Can't read data from Camera");
 
         return;
       }
