@@ -19,6 +19,23 @@ set(SRC_CORE
     ./sources/webcamera_manager.cpp
 )
 
+include(ExternalProject)
+
+ExternalProject_Add(
+    libjpeg_turbo
+    PREFIX ${CMAKE_BINARY_DIR}/libjpeg_turbo
+    GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
+    GIT_TAG main
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/libjpeg_turbo
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+)
+
+set(LIBJPEG_TURBO_INCLUDE_DIR ${CMAKE_BINARY_DIR}/libjpeg_turbo/include)
+set(LIBJPEG_TURBO_LIBRARY ${CMAKE_BINARY_DIR}/libjpeg_turbo/lib/libjpeg.a)  # Adjust the library name if necessary
+
+message(${LIBJPEG_TURBO_LIBRARY})
+
 option(LOG_DEBUG "Enable logging for debugging" OFF)
 
 # Specify the source directory
@@ -72,7 +89,9 @@ if(LOG_DEBUG)
     target_compile_definitions(${UF_NAME} PRIVATE LOG_DEBUG)
 endif()
 
-# set_property(TARGET ${UF_NAME} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+#target_include_directories(${UF_NAME} PRIVATE ${LIBJPEG_TURBO_INCLUDE_DIR})
+
+target_link_libraries(${UF_NAME} PRIVATE ${LIBJPEG_TURBO_LIBRARY})
 
 # Link the necessary libraries
 target_link_libraries(${UF_NAME} PUBLIC

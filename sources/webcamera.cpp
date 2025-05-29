@@ -7,6 +7,9 @@
 #include <fcntl.h>
 #include <fstream>
 #include <iostream>
+
+#include <jpeglib.h>
+
 #include <linux/videodev2.h>
 
 #include <string>
@@ -154,10 +157,44 @@ WebCamera::~WebCamera() { close_acquisition(); }
 
 void WebCamera::captureLoop() 
 {
+  unsigned char* bmp_buffer = new unsigned char[this->m_width * this->m_height * 3];
+
   while (m_running) {
     if (video_capture->isReadable(&tv)) 
     {
       int rsize = video_capture->read(this->buffer, video_capture->getBufferSize());
+
+      if (this->buffer && rsize > 0) {
+        struct jpeg_decompress_struct cinfo;
+        struct jpeg_error_mgr jerr;
+
+        // Initialize the JPEG decompression object
+        cinfo.err = jpeg_std_error(&jerr);
+        jpeg_create_decompress(&cinfo);
+
+        // Set the data source
+        jpeg_mem_src(&cinfo, reinterpret_cast<const unsigned char*>(this->buffer), rsize);
+
+        // Read the JPEG header
+        jpeg_read_header(&cinfo, TRUE);
+        jpeg_start_decompress(&cinfo);
+
+        //int width = cinfo.output_width;
+        //int height = cinfo.output_height;
+        //int num_channels = cinfo.output_components;
+        JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr)&cinfo, JPOOL_IMAGE, this->m_width * 3, 1);
+
+        while (cinfo.output_scanline < cinfo.output_height) {
+            jpeg_read_scanlines(&cinfo, buffer, 1);
+            memcpy(bmp_buffer + (cinfo.output_scanline - 1) * this->m_width * 3, buffer[0], this->m_width * 3);
+        }
+
+        jpeg_finish_decompress(&cinfo);
+        jpeg_destroy_decompress(&cinfo);
+
+        m_queue.push(avl::Image(this->m_width, this->m_height, this->m_width * 3, avl::PlainType::UInt8, 3, 
+          reinterpret_cast<atl::byte*>(bmp_buffer)));
+      }
 
       if (rsize == -1)
       {
@@ -170,17 +207,13 @@ void WebCamera::captureLoop()
 
         return;
       }
-
-      avl::Image outImage;
-
-      avl::LoadImageFromArray(reinterpret_cast<atl::byte*> (this->buffer), rsize, false, outImage);
-      //outImage.MakeDataOwn(); // <---- Scary memory menagment boooooo
-      m_queue.push(outImage);
     }
     
     //unnecessary since video_capture->isReadable
     //wait(m_queue.last_frame_time(), m_max_framerate);
   }
+
+  delete bmp_buffer;
 }
 
 void list_supported_framerates(const std::string &devicePath) 
