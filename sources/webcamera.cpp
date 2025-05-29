@@ -182,11 +182,11 @@ void WebCamera::captureLoop()
         //int width = cinfo.output_width;
         //int height = cinfo.output_height;
         //int num_channels = cinfo.output_components;
-        JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr)&cinfo, JPOOL_IMAGE, this->m_width * 3, 1);
+        JSAMPARRAY buff = (*cinfo.mem->alloc_sarray)((j_common_ptr)&cinfo, JPOOL_IMAGE, this->m_width * 3, 1);
 
         while (cinfo.output_scanline < cinfo.output_height) {
-            jpeg_read_scanlines(&cinfo, buffer, 1);
-            memcpy(bmp_buffer + (cinfo.output_scanline - 1) * this->m_width * 3, buffer[0], this->m_width * 3);
+            jpeg_read_scanlines(&cinfo, buff, 1);
+            memcpy(bmp_buffer + (cinfo.output_scanline - 1) * this->m_width * 3, buff[0], this->m_width * 3);
         }
 
         jpeg_finish_decompress(&cinfo);
