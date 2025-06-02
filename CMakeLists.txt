@@ -19,22 +19,8 @@ set(SRC_CORE
     ./sources/webcamera_manager.cpp
 )
 
-include(ExternalProject)
 
-ExternalProject_Add(
-    libjpeg_turbo
-    PREFIX ${CMAKE_BINARY_DIR}/libjpeg_turbo
-    GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
-    GIT_TAG main
-    CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/libjpeg_turbo
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-)
-
-set(LIBJPEG_TURBO_INCLUDE_DIR ${CMAKE_BINARY_DIR}/libjpeg_turbo/include)
-set(LIBJPEG_TURBO_LIBRARY ${CMAKE_BINARY_DIR}/libjpeg_turbo/lib/libjpeg.a)  # Adjust the library name if necessary
-
-message(${LIBJPEG_TURBO_LIBRARY})
+find_package(JPEG REQUIRED)
 
 option(LOG_DEBUG "Enable logging for debugging" OFF)
 
@@ -89,15 +75,12 @@ if(LOG_DEBUG)
     target_compile_definitions(${UF_NAME} PRIVATE LOG_DEBUG)
 endif()
 
-#target_include_directories(${UF_NAME} PRIVATE ${LIBJPEG_TURBO_INCLUDE_DIR})
-
-target_link_libraries(${UF_NAME} PRIVATE ${LIBJPEG_TURBO_LIBRARY})
-
 # Link the necessary libraries
 target_link_libraries(${UF_NAME} PUBLIC
     AVL_Lite
     UserFilters
     libv4l2cpp
+    JPEG::JPEG
 )
 
 # Set the output name for the shared library
@@ -108,6 +91,7 @@ set_target_properties(${UF_NAME} PROPERTIES
     POSITION_INDEPENDENT_CODE ON
 )
 
+
 # Add a custom target for cleaning up
 add_custom_target(clear
     COMMENT "${CMAKE_BINARY_DIR}"
@@ -115,17 +99,6 @@ add_custom_target(clear
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/CMakeCache.txt"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/cmake_install.cmake"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/Makefile"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/compile_commands.json"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/*.so"
-    COMMENT "Removing CMake-generated files and the executable"
-
-    COMMENT "${CMAKE_BINARY_DIR}/libv4l2cpp"
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/libv4l2cpp/CMakeFiles"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/CMakeCache.txt"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/cmake_install.cmake"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/Makefile"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/*.so"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/*.a"
-    COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_BINARY_DIR}/libv4l2cpp/libv4l2cpptest"
     COMMENT "Removing CMake-generated files and the executable"
 )
